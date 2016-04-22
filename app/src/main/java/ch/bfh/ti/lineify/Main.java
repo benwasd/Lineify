@@ -2,6 +2,7 @@ package ch.bfh.ti.lineify;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import rx.Observable;
@@ -23,7 +24,7 @@ public class Main extends Activity {
             subscriber.onCompleted();
         });
 
-        helloMessagesObservable.subscribe(s -> System.out.println(s));
+        helloMessagesObservable.subscribe(s -> Log.i("Main", s));
     }
 
     @Override
