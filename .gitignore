@@ -37,3 +37,10 @@ captures/
 
 # Keystore files
 *.jks
+
+# Other IDEA files
+.idea/libraries/
+.idea/gradle.xml
+.idea/misc.xml
+.idea/vcs.xml
+.idea/workspace.xml
