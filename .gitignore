@@ -39,4 +39,4 @@ captures/
 *.jks
 
 # Other IDEA files
-.idea/
+.idea/*
