@@ -26,7 +26,7 @@ public class Main extends Activity {
         IPermissionRequestor permissionRequestor = DI.container().resolve(IPermissionRequestor.class);
         IWayPointService wayPointService = DI.container().resolve(IWayPointService.class);
         permissionRequestor.bindRequestPermissionsResultHandler(handler -> this.permissionResultHandler = handler);
-        permissionRequestor.requestPermissions(() -> this.beginLocationShizzel(wayPointService));
+        permissionRequestor.requestPermissions(this, () -> this.beginLocationShizzel(wayPointService));
     }
 
     @Override

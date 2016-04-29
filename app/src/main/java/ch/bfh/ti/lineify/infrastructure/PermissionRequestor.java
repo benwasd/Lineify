@@ -22,12 +22,10 @@ public class PermissionRequestor implements IPermissionRequestor {
     };
 
     private final Context context;
-    private final Activity currentActivity;
     private Action1<RequestPermissionsResultHandler> handler;
 
-    public PermissionRequestor(Context context, Activity currentActivity) {
+    public PermissionRequestor(Context context) {
         this.context = context;
-        this.currentActivity = currentActivity;
     }
 
     @Override
@@ -36,22 +34,22 @@ public class PermissionRequestor implements IPermissionRequestor {
     }
 
     @Override
-    public void requestPermissions(Runnable successRunnable) {
+    public void requestPermissions(Activity activity, Runnable successRunnable) {
         Runnable deniedRunnable = () -> {}; // TODO: Implement explanation dialog, http://developer.android.com/training/permissions/requesting.html
-        this.requestPermissions(successRunnable, deniedRunnable);
+        this.requestPermissions(activity, successRunnable, deniedRunnable);
     }
 
     @Override
-    public void requestPermissions(Runnable successRunnable, Runnable deniedRunnable) {
+    public void requestPermissions(Activity activity,Runnable successRunnable, Runnable deniedRunnable) {
         if (this.allRequiredPermissionsGranted()) {
             successRunnable.run();
         }
         else {
-            if (this.shouldShowRequestPermissionRationale()) {
+            if (this.shouldShowRequestPermissionRationale(activity)) {
                 deniedRunnable.run();
             }
             else {
-                ActivityCompat.requestPermissions(this.currentActivity, PERMISSIONS, PERMISSION_REQUEST_ID);
+                ActivityCompat.requestPermissions(activity, PERMISSIONS, PERMISSION_REQUEST_ID);
 
                 this.handler.call((requestCode, permissions, grantResults) -> {
                     if (requestCode == PERMISSION_REQUEST_ID) {
@@ -71,10 +69,10 @@ public class PermissionRequestor implements IPermissionRequestor {
         return result;
     }
 
-    public boolean shouldShowRequestPermissionRationale() {
+    public boolean shouldShowRequestPermissionRationale(Activity activity) {
         boolean result = false;
         for (String permission : PERMISSIONS) {
-            result |= ActivityCompat.shouldShowRequestPermissionRationale(this.currentActivity, Manifest.permission.ACCESS_FINE_LOCATION);
+            result |= ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
         }
 
         return result;

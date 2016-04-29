@@ -34,8 +34,7 @@ public class DI {
     private static void setupDependencyContainer() {
         IDependencyContainer container = new DependencyContainer();
         ch.bfh.ti.lineify.core.Registry.initializeDependencies(container);
-        Registry.initializeDependencies(container);
-        ch.bfh.ti.lineify.infrastructure.location.Registry.initializeDependencies(container);
+        ch.bfh.ti.lineify.infrastructure.Registry.initializeDependencies(container);
         ch.bfh.ti.lineify.ui.Registry.initializeDependencies(container);
 
         dependencyContainer = container;
