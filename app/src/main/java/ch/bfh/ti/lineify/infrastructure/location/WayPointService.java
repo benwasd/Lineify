@@ -28,7 +28,6 @@ public class WayPointService implements IWayPointService {
     private LocationRequest buildLocationRequest() {
         return LocationRequest.create()
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-            .setNumUpdates(5)
             .setInterval(100);
     }
 }

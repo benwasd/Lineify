@@ -2,6 +2,7 @@ package ch.bfh.ti.lineify.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -11,7 +12,7 @@ import ch.bfh.ti.lineify.R;
 import ch.bfh.ti.lineify.core.IPermissionRequestor;
 import ch.bfh.ti.lineify.core.IWayPointService;
 
-public class Main extends Activity {
+public class Main extends AppCompatActivity {
     private IPermissionRequestor.RequestPermissionsResultHandler permissionResultHandler;
 
     @Override
@@ -21,7 +22,6 @@ public class Main extends Activity {
         DI.setup(this.getApplicationContext());
 
         this.setContentView(R.layout.activity_main);
-        this.findViewById(R.id.fullscreen_content).setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
 
         IPermissionRequestor permissionRequestor = DI.container().resolve(IPermissionRequestor.class);
         IWayPointService wayPointService = DI.container().resolve(IWayPointService.class);
@@ -44,7 +44,7 @@ public class Main extends Activity {
 
         wayPointService.wayPointObservable()
             .subscribe(wayPoint -> {
-                    TextView output = (TextView)findViewById(R.id.fullscreen_content);
+                    TextView output = (TextView)findViewById(R.id.txtContentMain);
                     output.setText("C: " + (counter[0]++) + "\nSIZZL: " + wayPoint.altitude());
 
                     Log.i("Main", "Altitude " + wayPoint.altitude());
