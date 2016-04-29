@@ -1,4 +1,4 @@
-package ch.bfh.ti.lineify.infrastructure.connectivity;
+package ch.bfh.ti.lineify.infrastructure;
 
 import ch.bfh.ti.lineify.core.dependencyInjection.IDependencyContainer;
 
