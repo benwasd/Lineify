@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.location.LocationRequest;
 
@@ -54,12 +55,16 @@ public class Main extends Activity {
     public void beginLocationShizzel() {
         LocationRequest request = LocationRequest.create() //standard GMS LocationRequest
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setNumUpdates(5)
                 .setInterval(100);
+
+        int[] counter = new int[1];
 
         ReactiveLocationProvider locationProvider = new ReactiveLocationProvider(this.getApplicationContext());
         Subscription subscription = locationProvider.getUpdatedLocation(request)
                 .subscribe(location -> {
+                    TextView output = (TextView)findViewById(R.id.fullscreen_content);
+                    output.setText("C: " + (counter[0]++) + "\nSIZZL: " + location.getAltitude());
+
                     Log.i("Main", "Accuracy " + location.getAccuracy());
                     Log.i("Main", "Altitude " + location.getAltitude());
                     Log.i("Main", "Latitude " + location.getLatitude());
