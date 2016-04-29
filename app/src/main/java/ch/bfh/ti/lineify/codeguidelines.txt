@@ -1,0 +1,29 @@
+Code Guidelines
+
+1. Wir benutzen Java-Standarts, validiert durch das Reformat-Code Feature von IntelliJ.
+
+   Speziell:
+    - Formatierung für catch, finally, else, else if,..
+
+                 if (true) {                          try {
+                 }                                    }
+                 else {                               catch {
+                 }                                    }
+
+    - Verwedung des this Schlüsselwortes zur deutlichen Unterscheidung von Insanz-Feldern und Variablen.
+      Insanz Methoden werden auch mit this aufgerufen, statische Methoden ohne.
+
+    - Verwendung der "double brace initialization" auf einer Zeile, falls maximal zwei Methoden
+      darin initialisiert werden. Wenn es mehr als drei Methoden sind, ist diese Art der Initializierung
+      nicht zu verwenden.
+
+
+2. Wir nutzen Java-Standarts für die Benennung:
+   classes: UpperCamelCase { }
+   methods: lowerCamelCase() { }
+   constants: ALL_UPPER_CASE = "";
+   variables: lowerCamelCase = "";
+   fields: lowerCamelCase = "";
+
+   Speziell:
+   interfaces: IUpperCamelCase { }
