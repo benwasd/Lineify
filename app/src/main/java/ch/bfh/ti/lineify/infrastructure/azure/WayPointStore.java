@@ -1,6 +1,7 @@
 package ch.bfh.ti.lineify.infrastructure.azure;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.sync.MobileServiceSyncTable;
@@ -24,6 +25,11 @@ public class WayPointStore implements IWayPointStore {
 
     @Override
     public void persistWayPoints(List<WayPoint> wayPoints) {
+        Log.i("WayPointStore", "persistWayPoints");
+    }
 
+    @Override
+    public void syncWithBackend() {
+        Log.i("WayPointStore", "syncWithBackend");
     }
 }

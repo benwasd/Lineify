@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.UUID;
 
 public class WayPoint {
+    private UUID id;
     private UUID trackId;
     private final Date timestamp;
     private final double altitude;
@@ -11,6 +12,7 @@ public class WayPoint {
     private final double latitude;
 
     public WayPoint(UUID trackId, Date timestamp, double altitude, double longitude, double latitude) {
+        this.id = UUID.randomUUID();
         this.trackId = trackId;
         this.timestamp = timestamp;
         this.altitude = altitude;
