@@ -1,10 +1,12 @@
 package ch.bfh.ti.lineify.infrastructure.location;
 
 import android.content.Context;
+import android.location.Location;
+import android.util.Log;
 
 import com.google.android.gms.location.LocationRequest;
 
-import java.util.Date;
+import java.util.List;
 
 import ch.bfh.ti.lineify.core.IWayPointService;
 import ch.bfh.ti.lineify.core.model.Track;
@@ -24,12 +26,26 @@ public class WayPointService implements IWayPointService {
         ReactiveLocationProvider locationProvider = new ReactiveLocationProvider(this.context);
         return locationProvider.getUpdatedLocation(this.buildLocationRequest())
             .filter(location -> location.hasAltitude())
-            .map(location -> new WayPoint(track.id(), new Date(), location.getAltitude(), location.getLongitude(), location.getLatitude()));
+            .buffer(5, 2)
+            .map(locations -> optimize(locations))
+            .map(location -> new WayPoint(track.id(), location.getAltitude(), location.getLongitude(), location.getLatitude()));
     }
 
     private LocationRequest buildLocationRequest() {
         return LocationRequest.create()
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
             .setInterval(100);
+    }
+
+    private Location optimize(List<Location> locations) {
+        Location result = null;
+
+        for (Location location : locations) {
+            if (result == null || result.getAccuracy() > location.getAccuracy()) {
+                result = location;
+            }
+        }
+
+        return result;
     }
 }

@@ -2,17 +2,13 @@ package ch.bfh.ti.lineify.infrastructure.android;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.util.Log;
-import android.widget.Toast;
 
-import java.util.Observable;
 import java.util.concurrent.TimeUnit;
 
 import ch.bfh.ti.lineify.DI;
 import ch.bfh.ti.lineify.core.IWayPointService;
 import ch.bfh.ti.lineify.core.IWayPointStore;
 import ch.bfh.ti.lineify.core.model.Track;
-import rx.Scheduler;
 
 public class TrackerService extends IntentService {
     private final IWayPointService wayPointService;
@@ -22,14 +18,10 @@ public class TrackerService extends IntentService {
         super("TrackerService");
         this.wayPointService = DI.container().resolve(IWayPointService.class);
         this.wayPointStore = DI.container().resolve(IWayPointStore.class);
-
-        Log.i("TrackerService", "instanciated");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.i("TrackerService", "onHandleIntent");
-
         this.wayPointService.wayPointObservable(new Track("benwasd@github", "Meine Wanderung"))
                 .buffer(10, TimeUnit.SECONDS)
                 .doOnNext(bufferdWayPoints -> this.wayPointStore.persistWayPoints(bufferdWayPoints))
