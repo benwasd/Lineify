@@ -40,3 +40,4 @@ captures/
 
 # Other IDEA files
 .idea/*
+*.hprof

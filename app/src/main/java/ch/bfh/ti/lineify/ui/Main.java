@@ -1,11 +1,16 @@
 package ch.bfh.ti.lineify.ui;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
+
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+
+import java.net.MalformedURLException;
 
 import ch.bfh.ti.lineify.DI;
 import ch.bfh.ti.lineify.GitHubService;
@@ -19,11 +24,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import com.microsoft.windowsazure.mobileservices.*;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
-import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
-
-import java.net.MalformedURLException;
 
 public class Main extends AppCompatActivity {
     private IPermissionRequestor.RequestPermissionsResultHandler permissionResultHandler;
@@ -96,15 +96,20 @@ public class Main extends AppCompatActivity {
         TodoItem item = new TodoItem();
         item.Text = "Awesome item";
 
-        this.mobileServiceClient.getTable(TodoItem.class)
-                .insert(item, (entity, exception, response) -> {
-                    if (exception == null) { // Insert succeeded
-                        Log.e("MAIN", "TODOITEM INSERT SUCCESS " + response.getStatus().message);
-                    }
-                    else { // Insert failed
-                        Log.e("MAIN", "TODOITEM INSERT FAIL", exception);
-                    }
-                });
+        ListenableFuture<TodoItem> asd = this.mobileServiceClient.getTable(TodoItem.class)
+                .insert(item);
+
+        Futures.addCallback(asd, new FutureCallback<TodoItem>() {
+            @Override
+            public void onSuccess(TodoItem result) {
+                Log.e("MAIN", "TODOITEM INSERT SUCCESS " + result.Id);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.e("MAIN", "TODOITEM INSERT FAIL", t);
+            }
+        });
 
     }
 }
