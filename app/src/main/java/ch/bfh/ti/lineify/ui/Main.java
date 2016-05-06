@@ -1,5 +1,6 @@
 package ch.bfh.ti.lineify.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,6 +20,7 @@ import ch.bfh.ti.lineify.TodoItem;
 import ch.bfh.ti.lineify.User;
 import ch.bfh.ti.lineify.core.IPermissionRequestor;
 import ch.bfh.ti.lineify.core.IWayPointService;
+import ch.bfh.ti.lineify.infrastructure.android.TrackerService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -54,17 +56,8 @@ public class Main extends AppCompatActivity {
     }
 
     public void beginLocationShizzel(IWayPointService wayPointService) {
-        int[] counter = new int[1];
-
-        wayPointService.wayPointObservable()
-                .subscribe(wayPoint -> {
-                    TextView output = (TextView)findViewById(R.id.txtContentMain);
-                    output.setText("C: " + (counter[0]++) + "\nAltitude: " + wayPoint.altitude());
-
-                    Log.i("Main", "Altitude " + wayPoint.altitude());
-                    Log.i("Main", "Latitude " + wayPoint.latitude());
-                    Log.i("Main", "Longitude " + wayPoint.longitude());
-                });
+        Intent intent = new Intent(this, TrackerService.class);
+        startService(intent);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.github.com/")

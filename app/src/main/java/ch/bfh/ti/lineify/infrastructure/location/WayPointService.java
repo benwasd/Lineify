@@ -7,6 +7,7 @@ import com.google.android.gms.location.LocationRequest;
 import java.util.Date;
 
 import ch.bfh.ti.lineify.core.IWayPointService;
+import ch.bfh.ti.lineify.core.model.Track;
 import ch.bfh.ti.lineify.core.model.WayPoint;
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Observable;
@@ -19,10 +20,11 @@ public class WayPointService implements IWayPointService {
     }
 
     @Override
-    public Observable<WayPoint> wayPointObservable() {
+    public Observable<WayPoint> wayPointObservable(Track track) {
         ReactiveLocationProvider locationProvider = new ReactiveLocationProvider(this.context);
         return locationProvider.getUpdatedLocation(this.buildLocationRequest())
-            .map(location -> new WayPoint(new Date(), location.getAltitude(), location.getLongitude(), location.getLatitude()));
+            .filter(location -> location.hasAltitude())
+            .map(location -> new WayPoint(track.id(), new Date(), location.getAltitude(), location.getLongitude(), location.getLatitude()));
     }
 
     private LocationRequest buildLocationRequest() {
