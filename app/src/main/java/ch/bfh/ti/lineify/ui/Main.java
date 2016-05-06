@@ -10,6 +10,7 @@ import android.widget.TextView;
 import ch.bfh.ti.lineify.DI;
 import ch.bfh.ti.lineify.GitHubService;
 import ch.bfh.ti.lineify.R;
+import ch.bfh.ti.lineify.TodoItem;
 import ch.bfh.ti.lineify.User;
 import ch.bfh.ti.lineify.core.IPermissionRequestor;
 import ch.bfh.ti.lineify.core.IWayPointService;
@@ -18,9 +19,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import com.microsoft.windowsazure.mobileservices.*;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
+import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
+
+import java.net.MalformedURLException;
 
 public class Main extends AppCompatActivity {
     private IPermissionRequestor.RequestPermissionsResultHandler permissionResultHandler;
+    private MobileServiceClient mobileServiceClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,5 +86,25 @@ public class Main extends AppCompatActivity {
                     }
                 }
             );
+
+        try {
+            this.mobileServiceClient = new MobileServiceClient("https://lineify.azurewebsites.net", this);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        TodoItem item = new TodoItem();
+        item.Text = "Awesome item";
+
+        this.mobileServiceClient.getTable(TodoItem.class)
+                .insert(item, (entity, exception, response) -> {
+                    if (exception == null) { // Insert succeeded
+                        Log.e("MAIN", "TODOITEM INSERT SUCCESS " + response.getStatus().message);
+                    }
+                    else { // Insert failed
+                        Log.e("MAIN", "TODOITEM INSERT FAIL", exception);
+                    }
+                });
+
     }
 }
