@@ -3,4 +3,13 @@
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_lineify_main">LineifyMain</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="communicate">Communicate</string>
+    <string name="new_tracking">New Tracking</string>
+    <string name="history">History</string>
+    <string name="settings">Settings</string>
 </resources>
