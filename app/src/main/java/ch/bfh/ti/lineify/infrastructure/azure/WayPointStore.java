@@ -53,6 +53,7 @@ public class WayPointStore implements IWayPointStore {
         Log.i("WayPointStore", "syncWithBackend");
 
         if (!this.isConnected()) {
+            Log.i("WayPointStore", "syncWithBackend is not connected");
             return;
         }
 
@@ -61,6 +62,7 @@ public class WayPointStore implements IWayPointStore {
 
             try {
                 syncContext.push().get();
+                Log.i("WayPointStore", "syncWithBackend push successful");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

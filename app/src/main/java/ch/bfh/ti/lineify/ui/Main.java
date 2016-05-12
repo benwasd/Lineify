@@ -1,10 +1,13 @@
 package ch.bfh.ti.lineify.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.TextView;
+import android.view.View;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -30,6 +33,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Main extends AppCompatActivity {
     private IPermissionRequestor.RequestPermissionsResultHandler permissionResultHandler;
     private MobileServiceClient mobileServiceClient;
+    private Intent trackerServiceIntent;
+    private boolean serviceRunning=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +43,25 @@ public class Main extends AppCompatActivity {
         DI.setup(this.getApplicationContext());
 
         this.setContentView(R.layout.activity_main);
+        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (!serviceRunning){
+                    startService(trackerServiceIntent);
+                    serviceRunning=true;
+                    Snackbar.make(v, "startService(trackerServiceIntent)", Snackbar.LENGTH_LONG).show();
+                    Log.i("Main","startService(trackerServiceIntent)");
+                }
+                else{
+                    stopService(trackerServiceIntent);
+                    serviceRunning=false;
+                    Snackbar.make(v, "stopService(trackerServiceIntent)", Snackbar.LENGTH_LONG).show();
+                    Log.i("Main","stopService(trackerServiceIntent)");
+                }
+            }
+        });
 
         IPermissionRequestor permissionRequestor = DI.container().resolve(IPermissionRequestor.class);
         IWayPointService wayPointService = DI.container().resolve(IWayPointService.class);
@@ -56,8 +80,9 @@ public class Main extends AppCompatActivity {
     }
 
     public void beginLocationShizzel(IWayPointService wayPointService) {
-        Intent intent = new Intent(this, TrackerService.class);
-        startService(intent);
+//        Intent trackerServiceIntent = new Intent(this, TrackerService.class);
+//        startService(trackerServiceIntent);
+        trackerServiceIntent = new Intent(this, TrackerService.class);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.github.com/")
