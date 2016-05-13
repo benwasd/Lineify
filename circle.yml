@@ -6,7 +6,7 @@ dependencies:
         - chmod +x gradlew
         - ./gradlew dependencies
     pre:
-        - echo y | android update sdk --no-ui --all --filter "tools,
+        - echo y | android update sdk --no-ui --all --filter "tools"
         - echo y | android update sdk --no-ui --all --filter "build-tools-24.0.0-preview"
         - echo y | android update sdk --no-ui --all --filter "extra-google-m2repository"
         - echo y | android update sdk --no-ui --all --filter "extra-google-google_play_services"
