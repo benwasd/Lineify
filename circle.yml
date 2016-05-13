@@ -19,8 +19,6 @@ dependencies:
 
 test:
     post:
-        - ls
-        - ls app
-        - ls app/build
+        - ls app/build/outputs
         - mkdir $CIRCLE_ARTIFACTS/apk
         - mv app/build/outputs/apk* $CIRCLE_ARTIFACTS/apk
