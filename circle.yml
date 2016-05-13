@@ -1,7 +1,24 @@
+general:
+    artifacts:
+        - /home/ubuntu/Lineify/app/build/outputs/apk/
 machine:
     environment:
+        GRADLE_OPTS: -Xmx4096m -XX:MaxPermSize=512m
 
 dependencies:
     override:
         - chmod +x gradlew
         - ./gradlew dependencies
+    pre:
+        - echo y | android update sdk --no-ui --all --filter "tools"
+        - echo y | android update sdk --no-ui --all --filter "build-tools-24.0.0-preview"
+        - echo y | android update sdk --no-ui --all --filter "extra-google-m2repository"
+        - echo y | android update sdk --no-ui --all --filter "extra-google-google_play_services"
+        - echo y | android update sdk --no-ui --all --filter "extra-android-support"
+        - echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"
+
+test:
+    post:
+        - ls app/build/outputs
+        - mkdir $CIRCLE_ARTIFACTS/apk
+        - mv app/build/outputs/apk* $CIRCLE_ARTIFACTS/apk
