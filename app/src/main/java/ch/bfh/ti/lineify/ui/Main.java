@@ -43,6 +43,8 @@ public class Main extends AppCompatActivity {
         DI.setup(this.getApplicationContext());
 
         this.setContentView(R.layout.activity_main);
+        trackerServiceIntent = new Intent(this, TrackerService.class);
+
         FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +84,6 @@ public class Main extends AppCompatActivity {
     public void beginLocationShizzel(IWayPointService wayPointService) {
 //        Intent trackerServiceIntent = new Intent(this, TrackerService.class);
 //        startService(trackerServiceIntent);
-        trackerServiceIntent = new Intent(this, TrackerService.class);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.github.com/")
