@@ -1,9 +1,10 @@
 package ch.bfh.ti.lineify.core.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-public class WayPoint {
+public class WayPoint implements Serializable {
     private UUID id;
     private UUID trackId;
     private Date created;

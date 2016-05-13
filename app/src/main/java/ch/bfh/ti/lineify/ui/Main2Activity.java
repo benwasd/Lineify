@@ -1,6 +1,9 @@
 package ch.bfh.ti.lineify.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -13,7 +16,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,32 +24,32 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 
-import java.net.MalformedURLException;
-
 import ch.bfh.ti.lineify.DI;
-import ch.bfh.ti.lineify.GitHubService;
 import ch.bfh.ti.lineify.R;
-import ch.bfh.ti.lineify.TodoItem;
-import ch.bfh.ti.lineify.User;
+import ch.bfh.ti.lineify.core.Constants;
 import ch.bfh.ti.lineify.core.IPermissionRequestor;
 import ch.bfh.ti.lineify.core.IWayPointService;
+import ch.bfh.ti.lineify.core.model.Track;
+import ch.bfh.ti.lineify.core.model.WayPoint;
 import ch.bfh.ti.lineify.infrastructure.android.TrackerService;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Main2Activity extends AppCompatActivity {
     private IPermissionRequestor.RequestPermissionsResultHandler permissionResultHandler;
     private MobileServiceClient mobileServiceClient;
     private Intent trackerServiceIntent;
     private boolean serviceRunning=false;
+    private BroadcastReceiver wayPointReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction() == Constants.wayPointBroadcastIntent) {
+                WayPoint wayPoint = (WayPoint)intent.getSerializableExtra(Constants.wayPointBroadcastExtraName);
+                TextView tvCurStatus = (TextView) findViewById(R.id.tv_CurStatusData);
+                tvCurStatus.setText(wayPoint.altitude()+"m, " +wayPoint.latitude()+" | " +wayPoint.longitude());
+            }
+        }
+    };
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -70,55 +72,10 @@ public class Main2Activity extends AppCompatActivity {
 
         DI.setup(this.getApplicationContext());
 
-        setContentView(R.layout.activity_lineify_main);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        trackerServiceIntent = new Intent(this, TrackerService.class);
-
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        assert mViewPager != null;
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        assert tabLayout != null;
-        tabLayout.setupWithViewPager(mViewPager);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_action);
-        assert fab != null;
-        fab.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                TextView tvCurStatus = (TextView) findViewById(R.id.tv_CurStatusData);
-
-                if (!serviceRunning){
-                    startService(trackerServiceIntent);
-                    serviceRunning=true;
-                    Snackbar.make(v, "startService(trackerServiceIntent)", Snackbar.LENGTH_LONG).show();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        fab.setImageDrawable(getDrawable(R.drawable.ic_gps_fixed));
-                    }
-                    tvCurStatus.setText("running");
-
-
-                }
-                else{
-                    stopService(trackerServiceIntent);
-                    serviceRunning=false;
-                    Snackbar.make(v, "stopService(trackerServiceIntent)", Snackbar.LENGTH_LONG).show();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        fab.setImageDrawable(getDrawable(R.drawable.ic_gps_off));
-                    }
-                    tvCurStatus.setText("stopped");
-                }
-            }
-        });
-
-
+        IPermissionRequestor permissionRequestor = DI.container().resolve(IPermissionRequestor.class);
+        IWayPointService wayPointService = DI.container().resolve(IWayPointService.class);
+        permissionRequestor.bindRequestPermissionsResultHandler(handler -> this.permissionResultHandler = handler);
+        permissionRequestor.requestPermissions(this, () -> this.init(wayPointService));
     }
 
 
@@ -126,6 +83,18 @@ public class Main2Activity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main2, menu);
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.registerReceiver(this.wayPointReceiver, new IntentFilter(Constants.wayPointBroadcastIntent));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        this.unregisterReceiver(this.wayPointReceiver);
     }
 
     @Override
@@ -221,5 +190,57 @@ public class Main2Activity extends AppCompatActivity {
         }
     }
 
+    public void init(IWayPointService wayPointService) {
 
+        setContentView(R.layout.activity_lineify_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        Track track = new Track("benwasd@github", "Meine Wanderung");
+        trackerServiceIntent = new Intent(this, TrackerService.class);
+        trackerServiceIntent.putExtra(Constants.trackerServiceExtraName,track);
+
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        assert mViewPager != null;
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        assert tabLayout != null;
+        tabLayout.setupWithViewPager(mViewPager);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_action);
+        assert fab != null;
+        fab.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                TextView tvCurStatus = (TextView) findViewById(R.id.tv_CurStatusData);
+
+                if (!serviceRunning){
+                    startService(trackerServiceIntent);
+                    serviceRunning=true;
+                    Snackbar.make(v, "startService(trackerServiceIntent)", Snackbar.LENGTH_LONG).show();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        fab.setImageDrawable(getDrawable(R.drawable.ic_gps_fixed));
+                    }
+                    tvCurStatus.setText("running");
+
+
+                }
+                else{
+                    stopService(trackerServiceIntent);
+                    serviceRunning=false;
+                    Snackbar.make(v, "stopService(trackerServiceIntent)", Snackbar.LENGTH_LONG).show();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        fab.setImageDrawable(getDrawable(R.drawable.ic_gps_off));
+                    }
+                    tvCurStatus.setText("stopped");
+                }
+            }
+        });
+
+    }
 }

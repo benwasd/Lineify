@@ -9,9 +9,11 @@ import android.util.Log;
 import java.util.concurrent.TimeUnit;
 
 import ch.bfh.ti.lineify.DI;
+import ch.bfh.ti.lineify.core.Constants;
 import ch.bfh.ti.lineify.core.IWayPointService;
 import ch.bfh.ti.lineify.core.IWayPointStore;
 import ch.bfh.ti.lineify.core.model.Track;
+import ch.bfh.ti.lineify.core.model.WayPoint;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -36,7 +38,8 @@ public class TrackerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("TrackerService","onStartCommand");
-        Subscription localPersistSubscription = this.wayPointService.wayPointObservable(new Track("benwasd@github", "Meine Wanderung"))
+        Subscription localPersistSubscription = this.wayPointService.wayPointObservable((Track)intent.getSerializableExtra(Constants.trackerServiceExtraName))
+                .doOnNext(wayPoint -> this.broadcastWayPoint(wayPoint))
                 .buffer(10, TimeUnit.SECONDS)
                 .doOnNext(bufferdWayPoints -> this.wayPointStore.persistWayPoints(bufferdWayPoints))
                 .subscribe();
@@ -54,5 +57,12 @@ public class TrackerService extends Service {
     public void onDestroy() {
         Log.i("TrackerService","onDestroy");
         this.subscriptions.unsubscribe();
+    }
+
+    private void broadcastWayPoint(WayPoint wayPoint) {
+        Intent broadcastIntent = new Intent(Constants.wayPointBroadcastIntent);
+        broadcastIntent.putExtra(Constants.wayPointBroadcastExtraName, wayPoint);
+
+        this.sendBroadcast(broadcastIntent);
     }
 }

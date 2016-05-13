@@ -1,9 +1,10 @@
 package ch.bfh.ti.lineify.core.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
-public class Track {
+public class Track implements Serializable {
     private final UUID id;
     private final String userEmail;
     private final String identifier;
