@@ -3,12 +3,9 @@ general:
         - /home/ubuntu/Lineify/app/build/outputs/apk/
 machine:
     environment:
-        GRADLE_OPTS: -Xmx4096m -XX:MaxPermSize=512m
+        GRADLE_OPTS: -Xmx32768m
 
 dependencies:
-    override:
-        - chmod +x gradlew
-        - ./gradlew dependencies
     pre:
         - echo y | android update sdk --no-ui --all --filter "tools"
         - echo y | android update sdk --no-ui --all --filter "build-tools-24.0.0-preview"
@@ -16,6 +13,9 @@ dependencies:
         - echo y | android update sdk --no-ui --all --filter "extra-google-google_play_services"
         - echo y | android update sdk --no-ui --all --filter "extra-android-support"
         - echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"
+    override:
+        - chmod +x gradlew
+        - ./gradlew dependencies
 
 test:
     override:
