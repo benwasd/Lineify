@@ -3,7 +3,7 @@ general:
         - /home/ubuntu/Lineify/app/build/outputs/apk/
 machine:
     environment:
-        GRADLE_OPTS: -Xmx32768m
+        GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
 
 dependencies:
     pre:
@@ -22,5 +22,5 @@ test:
         - ./gradlew assembleDebug
     post:
         - ls app/build/outputs
-        - mkdir $CIRCLE_ARTIFACTS/apk
-        - mv app/build/outputs/apk* $CIRCLE_ARTIFACTS/apk
+#        - mkdir $CIRCLE_ARTIFACTS/apk
+#        - mv app/build/outputs/apk* $CIRCLE_ARTIFACTS/apk
