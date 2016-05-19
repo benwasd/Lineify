@@ -9,6 +9,7 @@ dependencies:
     override:
         - chmod +x gradlew
         - ./gradlew dependencies
+        - ./gradlew assembleDebug
     pre:
         - echo y | android update sdk --no-ui --all --filter "tools"
         - echo y | android update sdk --no-ui --all --filter "build-tools-24.0.0-preview"
