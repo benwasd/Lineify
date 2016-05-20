@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.util.concurrent.TimeUnit;
 
@@ -21,7 +20,6 @@ public class TrackerService extends Service {
     private final IWayPointService wayPointService;
     private final IWayPointStore wayPointStore;
     private final CompositeSubscription subscriptions;
-    
 
     public TrackerService() {
         this.wayPointService = DI.container().resolve(IWayPointService.class);
@@ -37,10 +35,11 @@ public class TrackerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i("TrackerService","onStartCommand");
-        Subscription localPersistSubscription = this.wayPointService.wayPointObservable((Track)intent.getSerializableExtra(Constants.trackerServiceExtraName))
+        Track track = (Track)intent.getSerializableExtra(Constants.trackerServiceExtraName);
+
+        Subscription localPersistSubscription = this.wayPointService.wayPointObservable(track)
                 .doOnNext(wayPoint -> this.broadcastWayPoint(wayPoint))
-                .buffer(10, TimeUnit.SECONDS)
+                .buffer(15, TimeUnit.SECONDS)
                 .doOnNext(bufferdWayPoints -> this.wayPointStore.persistWayPoints(bufferdWayPoints))
                 .subscribe();
 
@@ -55,7 +54,7 @@ public class TrackerService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.i("TrackerService","onDestroy");
+        this.wayPointStore.syncWithBackend();
         this.subscriptions.unsubscribe();
     }
 

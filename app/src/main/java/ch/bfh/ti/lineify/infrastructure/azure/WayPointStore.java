@@ -37,23 +37,23 @@ public class WayPointStore implements IWayPointStore {
 
     @Override
     public void persistWayPoints(List<WayPoint> wayPoints) {
-        Log.i("WayPointStore", "persistWayPoints");
+        Log.i("WayPointStore", "Persist way points");
 
         try {
             for (WayPoint wayPoint : wayPoints) {
                 this.wayPointTable.insert(wayPoint).get();
             }
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
     @Override
     public void syncWithBackend() {
-        Log.i("WayPointStore", "syncWithBackend");
+        Log.i("WayPointStore", "Sync with backend");
 
         if (!this.isConnected()) {
-            Log.i("WayPointStore", "syncWithBackend is not connected");
             return;
         }
 
@@ -61,9 +61,12 @@ public class WayPointStore implements IWayPointStore {
             MobileServiceSyncContext syncContext = this.serviceClient.getSyncContext();
 
             try {
+                Log.i("WayPointStore", "Pending sync operations: " + syncContext.getPendingOperations());
+                Log.i("WayPointStore", "Sync");
                 syncContext.push().get();
-                Log.i("WayPointStore", "syncWithBackend push successful");
-            } catch (Exception ex) {
+                Log.i("WayPointStore", "Pending sync operations: " + syncContext.getPendingOperations());
+            }
+            catch (Throwable ex) {
                 ex.printStackTrace();
             }
         });
@@ -90,7 +93,8 @@ public class WayPointStore implements IWayPointStore {
                 localStore.defineTable("WayPoint", tableDefinition);
 
                 syncContext.initialize(localStore, new SimpleSyncHandler()).get();
-            } catch (final Exception ex) {
+            }
+            catch (Exception ex) {
                 ex.printStackTrace();
             }
         });

@@ -26,7 +26,7 @@ public class WayPointService implements IWayPointService {
         ReactiveLocationProvider locationProvider = new ReactiveLocationProvider(this.context);
         return locationProvider.getUpdatedLocation(this.buildLocationRequest())
             .filter(location -> location.hasAltitude())
-            .buffer(5, 2)
+            .buffer(8, 5)
             .map(locations -> optimize(locations))
             .map(location -> new WayPoint(track.id(), location.getAltitude(), location.getLongitude(), location.getLatitude()));
     }
@@ -34,7 +34,7 @@ public class WayPointService implements IWayPointService {
     private LocationRequest buildLocationRequest() {
         return LocationRequest.create()
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-            .setInterval(100);
+            .setInterval(1000);
     }
 
     private Location optimize(List<Location> locations) {
