@@ -28,7 +28,7 @@ public class WayPointService implements IWayPointService {
             .filter(location -> location.hasAltitude())
             .buffer(8, 5)
             .map(locations -> optimize(locations))
-            .map(location -> new WayPoint(track.id(), location.getAltitude(), location.getLongitude(), location.getLatitude()));
+            .map(location -> new WayPoint(track.id(), location.getAltitude(), location.getLongitude(), location.getLatitude(), location.getAccuracy()));
     }
 
     private LocationRequest buildLocationRequest() {

@@ -11,14 +11,16 @@ public class WayPoint implements Serializable {
     private double altitude;
     private double longitude;
     private double latitude;
+    private double accuracy;
 
-    public WayPoint(UUID trackId, double altitude, double longitude, double latitude) {
+    public WayPoint(UUID trackId, double altitude, double longitude, double latitude, double accuracy) {
         this.id = UUID.randomUUID();
         this.trackId = trackId;
         this.created = new Date();
         this.altitude = altitude;
         this.longitude = longitude;
         this.latitude = latitude;
+        this.accuracy = accuracy;
     }
 
     public Date created() {
@@ -35,5 +37,9 @@ public class WayPoint implements Serializable {
 
     public double latitude() {
         return this.latitude;
+    }
+
+    public double accuracy() {
+        return this.accuracy;
     }
 }

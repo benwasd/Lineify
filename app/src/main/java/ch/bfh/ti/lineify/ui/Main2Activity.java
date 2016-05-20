@@ -46,7 +46,7 @@ public class Main2Activity extends AppCompatActivity {
             if (intent.getAction() == Constants.wayPointBroadcastIntent) {
                 WayPoint wayPoint = (WayPoint)intent.getSerializableExtra(Constants.wayPointBroadcastExtraName);
                 TextView tvCurStatus = (TextView) findViewById(R.id.tv_CurStatusData);
-                tvCurStatus.setText(wayPoint.altitude()+"m, " +wayPoint.latitude()+" | " +wayPoint.longitude());
+                tvCurStatus.setText(wayPoint.altitude()+"m, " +wayPoint.latitude()+" | " +wayPoint.longitude()+" | "+wayPoint.accuracy());
             }
         }
     };
