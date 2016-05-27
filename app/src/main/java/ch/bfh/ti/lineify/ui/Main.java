@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,15 +22,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import ch.bfh.ti.lineify.DI;
 import ch.bfh.ti.lineify.R;
 import ch.bfh.ti.lineify.core.Constants;
 import ch.bfh.ti.lineify.core.IPermissionRequestor;
+import ch.bfh.ti.lineify.core.IWayPointRestApiDefinition;
 import ch.bfh.ti.lineify.core.IWayPointService;
 import ch.bfh.ti.lineify.core.IWayPointStore;
 import ch.bfh.ti.lineify.core.model.Track;
 import ch.bfh.ti.lineify.core.model.WayPoint;
 import ch.bfh.ti.lineify.infrastructure.android.TrackerService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Main extends AppCompatActivity {
     private IPermissionRequestor.RequestPermissionsResultHandler permissionResultHandler;
@@ -55,6 +64,7 @@ public class Main extends AppCompatActivity {
         permissionRequestor.requestPermissions(this, () -> {
             this.initializeUi();
             this.initialize(wayPointService, wayPointStore);
+            this.retrofitShizzle();
         });
     }
 
@@ -209,5 +219,31 @@ public class Main extends AppCompatActivity {
 
             return rootView;
         }
+    }
+    private void retrofitShizzle(){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://lineify.azurewebsites.net/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
+        retrofit.create(IWayPointRestApiDefinition.class).queryWayPoint("trackid eq '82b49fbd-5a10-4ff1-b971-c09b180dcd87'")
+                .enqueue(
+                        new Callback<List<WayPoint>>() {
+                            @Override
+                            public void onResponse(Call<List<WayPoint>> call, Response<List<WayPoint>> response) {
+                                Log.i("MAIN", "IWayPointBackend size: "+response.body().size());
+                                for (WayPoint wayPoint : response.body()){
+                                    Log.i("MAIN","IWayPointBackend created:"+ wayPoint.created() +"alti: " +wayPoint.altitude() );
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<WayPoint>> call, Throwable t) {
+                                Log.e("MAIN", "IWayPointBackend FAIL", t);
+                            }
+                        }
+                );
     }
 }
