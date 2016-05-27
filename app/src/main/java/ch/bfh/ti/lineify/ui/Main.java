@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -120,8 +121,16 @@ public class Main extends AppCompatActivity {
                 trackerServiceIntent[0].putExtra(Constants.trackerServiceExtraName,track);
 
                 startService(trackerServiceIntent[0]);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    this.floatingActionButton.setImageDrawable(getDrawable(R.drawable.ic_gps_fixed));
+                }
             }
             else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    this.floatingActionButton.setImageDrawable(getDrawable(R.drawable.ic_gps_off));
+                }
+
                 stopService(trackerServiceIntent[0]);
 
                 trackerServiceIntent[0] = null;
