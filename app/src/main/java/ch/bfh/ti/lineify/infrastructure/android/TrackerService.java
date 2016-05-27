@@ -37,14 +37,16 @@ public class TrackerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Track track = (Track)intent.getSerializableExtra(Constants.trackerServiceExtraName);
 
+        this.wayPointStore.persistTrack(track);
+
         Subscription localPersistSubscription = this.wayPointService.wayPointObservable(track)
-                .doOnNext(wayPoint -> this.broadcastWayPoint(wayPoint))
-                .buffer(15, TimeUnit.SECONDS)
-                .doOnNext(bufferdWayPoints -> this.wayPointStore.persistWayPoints(bufferdWayPoints))
-                .subscribe();
+            .doOnNext(wayPoint -> this.broadcastWayPoint(wayPoint))
+            .buffer(15, TimeUnit.SECONDS)
+            .doOnNext(bufferdWayPoints -> this.wayPointStore.persistWayPoints(bufferdWayPoints))
+            .subscribe();
 
         Subscription syncSubscription = rx.Observable.interval(1, TimeUnit.MINUTES)
-                .subscribe(x -> this.wayPointStore.syncWithBackend());
+            .subscribe(x -> this.wayPointStore.syncWithBackend());
 
         this.subscriptions.add(localPersistSubscription);
         this.subscriptions.add(syncSubscription);
@@ -54,7 +56,6 @@ public class TrackerService extends Service {
 
     @Override
     public void onDestroy() {
-        this.wayPointStore.syncWithBackend();
         this.subscriptions.unsubscribe();
     }
 

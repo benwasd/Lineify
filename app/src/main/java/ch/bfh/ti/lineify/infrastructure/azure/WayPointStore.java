@@ -20,19 +20,34 @@ import java.util.List;
 import java.util.Map;
 
 import ch.bfh.ti.lineify.core.IWayPointStore;
+import ch.bfh.ti.lineify.core.model.Track;
 import ch.bfh.ti.lineify.core.model.WayPoint;
 
 public class WayPointStore implements IWayPointStore {
     private final Context context;
     private final MobileServiceClient serviceClient;
     private final MobileServiceSyncTable<WayPoint> wayPointTable;
+    private final MobileServiceSyncTable<Track> trackTable;
 
     public WayPointStore(Context context) throws MalformedURLException {
         this.context = context;
         this.serviceClient = new MobileServiceClient("http://lineify.azurewebsites.net/", context);
         this.wayPointTable = this.serviceClient.getSyncTable("WayPoint", WayPoint.class);
+        this.trackTable = this.serviceClient.getSyncTable("Track", Track.class);
 
         this.initLocalStore();
+    }
+
+    @Override
+    public void persistTrack(Track track) {
+        Log.i("WayPointStore", "Persist track");
+
+        try {
+            this.trackTable.insert(track).get();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -81,16 +96,23 @@ public class WayPointStore implements IWayPointStore {
             }
 
             try {
+                SQLiteLocalStore localStore = new SQLiteLocalStore(this.serviceClient.getContext(), "OfflineStore", null, 1);
+
+                Map<String, ColumnDataType> wayPointTableDefinition = new HashMap<>();
+                wayPointTableDefinition.put("id", ColumnDataType.String);
+                wayPointTableDefinition.put("trackId", ColumnDataType.String);
+                wayPointTableDefinition.put("created", ColumnDataType.Date);
+                wayPointTableDefinition.put("altitude", ColumnDataType.Real);
+                wayPointTableDefinition.put("longitude", ColumnDataType.Real);
+                wayPointTableDefinition.put("latitude", ColumnDataType.Real);
+                wayPointTableDefinition.put("accuracy", ColumnDataType.Real);
+                localStore.defineTable("WayPoint", wayPointTableDefinition);
+
                 Map<String, ColumnDataType> tableDefinition = new HashMap<>();
                 tableDefinition.put("id", ColumnDataType.String);
-                tableDefinition.put("trackId", ColumnDataType.String);
-                tableDefinition.put("created", ColumnDataType.Date);
-                tableDefinition.put("altitude", ColumnDataType.Real);
-                tableDefinition.put("longitude", ColumnDataType.Real);
-                tableDefinition.put("latitude", ColumnDataType.Real);
-
-                SQLiteLocalStore localStore = new SQLiteLocalStore(this.serviceClient.getContext(), "OfflineWayPointStore", null, 1);
-                localStore.defineTable("WayPoint", tableDefinition);
+                tableDefinition.put("identifier", ColumnDataType.String);
+                tableDefinition.put("userEmail", ColumnDataType.String);
+                localStore.defineTable("Track", tableDefinition);
 
                 syncContext.initialize(localStore, new SimpleSyncHandler()).get();
             }

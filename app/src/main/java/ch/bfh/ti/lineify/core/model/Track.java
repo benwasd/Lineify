@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class Track implements Serializable {
-    private final UUID id;
-    private final String userEmail;
-    private final String identifier;
+    private UUID id;
+    private String userEmail;
+    private String identifier;
 
     public Track(String userEmail, String identifier) {
         this.id = UUID.randomUUID();

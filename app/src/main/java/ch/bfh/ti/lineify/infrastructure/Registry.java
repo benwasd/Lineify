@@ -2,8 +2,6 @@ package ch.bfh.ti.lineify.infrastructure;
 
 import android.content.Context;
 
-import java.net.MalformedURLException;
-
 import ch.bfh.ti.lineify.core.IPermissionRequestor;
 import ch.bfh.ti.lineify.core.IWayPointService;
 import ch.bfh.ti.lineify.core.IWayPointStore;
