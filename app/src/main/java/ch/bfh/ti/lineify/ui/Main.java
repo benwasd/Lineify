@@ -1,40 +1,42 @@
 package ch.bfh.ti.lineify.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-
-import java.net.MalformedURLException;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import ch.bfh.ti.lineify.DI;
-import ch.bfh.ti.lineify.GitHubService;
 import ch.bfh.ti.lineify.R;
-import ch.bfh.ti.lineify.TodoItem;
-import ch.bfh.ti.lineify.User;
+import ch.bfh.ti.lineify.core.Constants;
 import ch.bfh.ti.lineify.core.IPermissionRequestor;
 import ch.bfh.ti.lineify.core.IWayPointService;
+import ch.bfh.ti.lineify.core.IWayPointStore;
+import ch.bfh.ti.lineify.core.model.Track;
+import ch.bfh.ti.lineify.core.model.WayPoint;
 import ch.bfh.ti.lineify.infrastructure.android.TrackerService;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Main extends AppCompatActivity {
     private IPermissionRequestor.RequestPermissionsResultHandler permissionResultHandler;
-    private MobileServiceClient mobileServiceClient;
-    private Intent trackerServiceIntent;
-    private boolean serviceRunning=false;
+    private BroadcastReceiver wayPointReceiver;
+
+    private ViewPager viewPager;
+    private FloatingActionButton floatingActionButton;
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,38 +44,35 @@ public class Main extends AppCompatActivity {
 
         DI.setup(this.getApplicationContext());
 
-        this.setContentView(R.layout.activity_main);
-        trackerServiceIntent = new Intent(this, TrackerService.class);
-
-        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (!serviceRunning){
-                    startService(trackerServiceIntent);
-                    serviceRunning=true;
-                    Snackbar.make(v, "startService(trackerServiceIntent)", Snackbar.LENGTH_LONG).show();
-                    Log.i("Main","startService(trackerServiceIntent)");
-                }
-                else{
-                    stopService(trackerServiceIntent);
-                    serviceRunning=false;
-                    Snackbar.make(v, "stopService(trackerServiceIntent)", Snackbar.LENGTH_LONG).show();
-                    Log.i("Main","stopService(trackerServiceIntent)");
-                }
-            }
-        });
-
         IPermissionRequestor permissionRequestor = DI.container().resolve(IPermissionRequestor.class);
         IWayPointService wayPointService = DI.container().resolve(IWayPointService.class);
+        IWayPointStore wayPointStore = DI.container().resolve(IWayPointStore.class);
         permissionRequestor.bindRequestPermissionsResultHandler(handler -> this.permissionResultHandler = handler);
-        permissionRequestor.requestPermissions(this, () -> this.beginLocationShizzel(wayPointService));
+
+        this.setContentView(R.layout.activity_lineify_main);
+
+        permissionRequestor.requestPermissions(this, () -> {
+            this.initializeUi();
+            this.initialize(wayPointService, wayPointStore);
+        });
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
+    protected void onResume() {
+        super.onResume();
+
+        if (this.wayPointReceiver != null) {
+            this.registerReceiver(this.wayPointReceiver, new IntentFilter(Constants.wayPointBroadcastIntent));
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (this.wayPointReceiver != null) {
+            this.unregisterReceiver(this.wayPointReceiver);
+        }
     }
 
     @Override
@@ -81,54 +80,125 @@ public class Main extends AppCompatActivity {
         permissionResultHandler.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    public void beginLocationShizzel(IWayPointService wayPointService) {
-//        Intent trackerServiceIntent = new Intent(this, TrackerService.class);
-//        startService(trackerServiceIntent);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main2, menu);
+        return true;
+    }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.github.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        retrofit.create(GitHubService.class).users("benwasd")
-            .enqueue(
-                new Callback<User>() {
-                    @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
-                      Log.i("MAIN", "GitHubService Id: " + response.body().getId());
-                      Log.i("MAIN", "GitHubService Name: " + response.body().getName());
-                    }
-
-                    @Override
-                    public void onFailure(Call<User> call, Throwable t) {
-                      Log.e("MAIN", "GitHubService FAIL", t);
-                    }
-                }
-            );
-
-        try {
-            this.mobileServiceClient = new MobileServiceClient("https://lineify.azurewebsites.net", this);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            return true;
         }
+        else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
 
-        TodoItem item = new TodoItem();
-        item.Text = "Awesome item";
+    private void initializeUi() {
+        this.viewPager = (ViewPager) this.findViewById(R.id.container);
+        this.floatingActionButton = (FloatingActionButton) this.findViewById(R.id.fab_action);
+        this.tabLayout = (TabLayout) this.findViewById(R.id.tabs);
 
-        ListenableFuture<TodoItem> asd = this.mobileServiceClient.getTable(TodoItem.class)
-                .insert(item);
+        Toolbar toolbar = (Toolbar) this.findViewById(R.id.toolbar);
+        this.setSupportActionBar(toolbar);
 
-        Futures.addCallback(asd, new FutureCallback<TodoItem>() {
-            @Override
-            public void onSuccess(TodoItem result) {
-                Log.e("MAIN", "TODOITEM INSERT SUCCESS " + result.Id);
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this.getSupportFragmentManager());
+        this.viewPager.setAdapter(sectionsPagerAdapter);
+
+        this.tabLayout.setupWithViewPager(this.viewPager);
+    }
+
+    private void initialize(IWayPointService wayPointService, IWayPointStore wayPointStore) {
+        final Intent[] trackerServiceIntent = new Intent[1];
+        this.floatingActionButton.setOnClickListener(v -> {
+            if (trackerServiceIntent[0] == null) {
+                Track track = new Track("benwasd@github", "Meine Wanderung");
+                trackerServiceIntent[0] = new Intent(this, TrackerService.class);
+                trackerServiceIntent[0].putExtra(Constants.trackerServiceExtraName,track);
+
+                startService(trackerServiceIntent[0]);
             }
+            else {
+                stopService(trackerServiceIntent[0]);
 
-            @Override
-            public void onFailure(Throwable t) {
-                Log.e("MAIN", "TODOITEM INSERT FAIL", t);
+                trackerServiceIntent[0] = null;
             }
         });
 
+        this.wayPointReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction() == Constants.wayPointBroadcastIntent) {
+                    WayPoint wayPoint = (WayPoint)intent.getSerializableExtra(Constants.wayPointBroadcastExtraName);
+                    TextView tvCurStatus = (TextView) findViewById(R.id.tv_CurStatusData);
+                    tvCurStatus.setText(wayPoint.altitude()+"m, " +wayPoint.latitude()+" | " +wayPoint.longitude()+" | "+wayPoint.accuracy());
+                }
+            }
+        };
+    }
+
+    public static class SectionsPagerAdapter extends FragmentPagerAdapter {
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return PlaceholderFragment.newInstance(position + 1);
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return "Tracking";
+                case 1:
+                    return "History";
+            }
+
+            return null;
+        }
+    }
+
+    public static class PlaceholderFragment extends Fragment {
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        public PlaceholderFragment() {
+        }
+
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+
+            return fragment;
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View rootView;
+            switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
+                case 1:
+                    rootView = inflater.inflate(R.layout.fragment_lineify_main, container, false);
+                    break;
+                case 2:
+                    rootView = inflater.inflate(R.layout.fragment_lineify_history, container, false);
+                    break;
+                default:
+                    rootView = inflater.inflate(R.layout.fragment_lineify_main, container, false);
+                    break;
+            }
+
+            return rootView;
+        }
     }
 }

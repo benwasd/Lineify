@@ -42,7 +42,7 @@ public class PermissionRequestor implements IPermissionRequestor {
     }
 
     @Override
-    public void requestPermissions(Activity activity,Runnable successRunnable, Runnable deniedRunnable) {
+    public void requestPermissions(Activity activity, Runnable successRunnable, Runnable deniedRunnable) {
         if (this.allRequiredPermissionsGranted()) {
             successRunnable.run();
         }
