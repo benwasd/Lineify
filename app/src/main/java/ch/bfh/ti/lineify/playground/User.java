@@ -1,4 +1,4 @@
-package ch.bfh.ti.lineify;
+package ch.bfh.ti.lineify.playground;
 
 public class User {
     private int id;

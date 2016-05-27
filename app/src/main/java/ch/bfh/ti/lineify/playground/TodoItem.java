@@ -1,4 +1,4 @@
-package ch.bfh.ti.lineify;
+package ch.bfh.ti.lineify.playground;
 
 public class TodoItem {
     public String Id;

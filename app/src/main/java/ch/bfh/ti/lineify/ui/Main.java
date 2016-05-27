@@ -14,31 +14,23 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ch.bfh.ti.lineify.DI;
 import ch.bfh.ti.lineify.R;
 import ch.bfh.ti.lineify.core.Constants;
 import ch.bfh.ti.lineify.core.IPermissionRequestor;
-import ch.bfh.ti.lineify.core.IWayPointRestApiDefinition;
 import ch.bfh.ti.lineify.core.IWayPointService;
 import ch.bfh.ti.lineify.core.IWayPointStore;
 import ch.bfh.ti.lineify.core.model.Track;
 import ch.bfh.ti.lineify.core.model.WayPoint;
 import ch.bfh.ti.lineify.infrastructure.android.TrackerService;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import ch.bfh.ti.lineify.playground.retrofitShizzle;
+import ch.bfh.ti.lineify.ui.fragments.HistoryFragment;
+import ch.bfh.ti.lineify.ui.fragments.MainFragment;
 
 public class Main extends AppCompatActivity {
     private IPermissionRequestor.RequestPermissionsResultHandler permissionResultHandler;
@@ -59,12 +51,13 @@ public class Main extends AppCompatActivity {
         IWayPointStore wayPointStore = DI.container().resolve(IWayPointStore.class);
         permissionRequestor.bindRequestPermissionsResultHandler(handler -> this.permissionResultHandler = handler);
 
-        this.setContentView(R.layout.activity_lineify_main);
+        this.setContentView(R.layout.activity_main);
 
         permissionRequestor.requestPermissions(this, () -> {
+            this.initToolbar();
             this.initializeUi();
             this.initialize(wayPointService, wayPointStore);
-            this.retrofitShizzle();
+            retrofitShizzle.run();
         });
     }
 
@@ -91,21 +84,10 @@ public class Main extends AppCompatActivity {
         permissionResultHandler.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main2, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        else {
-            return super.onOptionsItemSelected(item);
-        }
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) this.findViewById(R.id.toolbar);
+        this.setSupportActionBar(toolbar);
+        setTitle(getString(R.string.app_name));
     }
 
     private void initializeUi() {
@@ -113,11 +95,10 @@ public class Main extends AppCompatActivity {
         this.floatingActionButton = (FloatingActionButton) this.findViewById(R.id.fab_action);
         this.tabLayout = (TabLayout) this.findViewById(R.id.tabs);
 
-        Toolbar toolbar = (Toolbar) this.findViewById(R.id.toolbar);
-        this.setSupportActionBar(toolbar);
-
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this.getSupportFragmentManager());
-        this.viewPager.setAdapter(sectionsPagerAdapter);
+        PagerAdapter pagerAdapter = new PagerAdapter(this.getSupportFragmentManager());
+        pagerAdapter.addFragment(MainFragment.newInstance(0), "Tracking");
+        pagerAdapter.addFragment(HistoryFragment.newInstance(1), "History");
+        this.viewPager.setAdapter(pagerAdapter);
 
         this.tabLayout.setupWithViewPager(this.viewPager);
     }
@@ -159,91 +140,31 @@ public class Main extends AppCompatActivity {
         };
     }
 
-    public static class SectionsPagerAdapter extends FragmentPagerAdapter {
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
+    public static class PagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> fragmentList = new ArrayList<>();
+        private final List<String> fragmentTitleList = new ArrayList<>();
+
+        public PagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            fragmentList.add(fragment);
+            fragmentTitleList.add(title);
         }
 
         @Override
         public Fragment getItem(int position) {
-            return PlaceholderFragment.newInstance(position + 1);
+            return fragmentList.get(position);
         }
 
         @Override
         public int getCount() {
-            return 2;
+            return fragmentList.size();
         }
-
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "Tracking";
-                case 1:
-                    return "History";
-            }
-
-            return null;
+            return fragmentTitleList.get(position);
         }
-    }
-
-    public static class PlaceholderFragment extends Fragment {
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootView;
-            switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
-                case 1:
-                    rootView = inflater.inflate(R.layout.fragment_lineify_main, container, false);
-                    break;
-                case 2:
-                    rootView = inflater.inflate(R.layout.fragment_lineify_history, container, false);
-                    break;
-                default:
-                    rootView = inflater.inflate(R.layout.fragment_lineify_main, container, false);
-                    break;
-            }
-
-            return rootView;
-        }
-    }
-    private void retrofitShizzle(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://lineify.azurewebsites.net/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-
-        retrofit.create(IWayPointRestApiDefinition.class).queryWayPoint("trackid eq '82b49fbd-5a10-4ff1-b971-c09b180dcd87'")
-                .enqueue(
-                        new Callback<List<WayPoint>>() {
-                            @Override
-                            public void onResponse(Call<List<WayPoint>> call, Response<List<WayPoint>> response) {
-                                Log.i("MAIN", "IWayPointBackend size: "+response.body().size());
-                                for (WayPoint wayPoint : response.body()){
-                                    Log.i("MAIN","IWayPointBackend created:"+ wayPoint.created() +"alti: " +wayPoint.altitude() );
-                                }
-
-                            }
-
-                            @Override
-                            public void onFailure(Call<List<WayPoint>> call, Throwable t) {
-                                Log.e("MAIN", "IWayPointBackend FAIL", t);
-                            }
-                        }
-                );
     }
 }

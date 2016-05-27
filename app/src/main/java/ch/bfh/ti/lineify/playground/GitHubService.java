@@ -1,4 +1,4 @@
-package ch.bfh.ti.lineify;
+package ch.bfh.ti.lineify.playground;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
