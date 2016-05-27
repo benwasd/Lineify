@@ -45,13 +45,8 @@ public class HistoryFragment extends Fragment {
 
     private List<String> createItemList() {
         List<String> itemList = new ArrayList<>();
-        Bundle bundle = getArguments();
-        if(bundle!=null) {
-            int itemsCount = bundle.getInt(ARG_SECTION_NUMBER);
-            for (int i = 0; i < itemsCount; i++) {
-                itemList.add("Item " + i);
-            }
-        }
+        itemList.add("Item 1");
+
         return itemList;
     }
 }
