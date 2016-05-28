@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ch.bfh.ti.lineify.core.Constants;
 import ch.bfh.ti.lineify.core.IWayPointStore;
 import ch.bfh.ti.lineify.core.model.Track;
 import ch.bfh.ti.lineify.core.model.WayPoint;
@@ -31,7 +32,7 @@ public class WayPointStore implements IWayPointStore {
 
     public WayPointStore(Context context) throws MalformedURLException {
         this.context = context;
-        this.serviceClient = new MobileServiceClient("http://lineify.azurewebsites.net/", context);
+        this.serviceClient = new MobileServiceClient(Constants.BACKEND_BASE_URL, context);
         this.wayPointTable = this.serviceClient.getSyncTable("WayPoint", WayPoint.class);
         this.trackTable = this.serviceClient.getSyncTable("Track", Track.class);
 
@@ -125,11 +126,8 @@ public class WayPointStore implements IWayPointStore {
     private boolean isConnected() {
         ConnectivityManager cm = (ConnectivityManager) this.context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
-        if (ni == null) {
-            return false;
-        }
 
-        return ni.isConnected();
+        return ni != null && ni.isConnected();
     }
 
     private static void runAsync(Runnable runnable) {
