@@ -1,7 +1,7 @@
 package ch.bfh.ti.lineify.core.model;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.GregorianCalendar;
 import java.util.UUID;
 
 public class Track implements Serializable {
@@ -27,7 +27,7 @@ public class Track implements Serializable {
         return this.identifier;
     }
 
-    public List<WayPoint> getWayPoints() {
-        throw new Error("Not implemented");
+    public static String defaultTrackIdentifier() {
+        return String.format("Line vom %1$td.%1$tm.%1$tY %1$tH:%1$tm", new GregorianCalendar());
     }
 }

@@ -4,7 +4,6 @@ import android.content.Context;
 
 import ch.bfh.ti.lineify.core.dependencyInjection.DependencyContainer;
 import ch.bfh.ti.lineify.core.dependencyInjection.IDependencyContainer;
-import ch.bfh.ti.lineify.infrastructure.Registry;
 
 public class DI {
     private static Object setupLockPad = new Object();

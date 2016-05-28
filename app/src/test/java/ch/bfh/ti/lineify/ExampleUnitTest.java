@@ -2,6 +2,8 @@ package ch.bfh.ti.lineify;
 
 import org.junit.Test;
 
+import ch.bfh.ti.lineify.core.model.Track;
+
 import static org.junit.Assert.*;
 
 /**

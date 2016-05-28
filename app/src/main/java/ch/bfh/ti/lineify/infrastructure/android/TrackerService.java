@@ -22,12 +22,8 @@ public class TrackerService extends Service {
     private final CompositeSubscription subscriptions;
 
     public TrackerService() {
-        this(DI.container().resolve(IWayPointService.class), DI.container().resolve(IWayPointStore.class));
-    }
-
-    public TrackerService(IWayPointService wayPointService, IWayPointStore wayPointStore) {
-        this.wayPointService = wayPointService;
-        this.wayPointStore = wayPointStore;
+        this.wayPointService = DI.container().resolve(IWayPointService.class);
+        this.wayPointStore = DI.container().resolve(IWayPointStore.class);
         this.subscriptions = new CompositeSubscription();
     }
 
@@ -38,13 +34,13 @@ public class TrackerService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Track track = (Track)intent.getSerializableExtra(Constants.TRACKER_SERVICE_EXTRA_NAME);
+    public int onStartCommand(Intent startStopIntent, int flags, int startId) {
+        Track track = (Track)startStopIntent.getSerializableExtra(Constants.TRACKER_SERVICE_TRACK_EXTRA_NAME);
 
         this.wayPointStore.persistTrack(track);
 
         Subscription localPersistSubscription = this.wayPointService.trackLocation(track.id())
-            .doOnNext(wayPoint -> this.broadcastWayPoint(wayPoint))
+            .doOnNext(wayPoint -> this.broadcastWayPoint(wayPoint, startStopIntent))
             .buffer(15, TimeUnit.SECONDS)
             .doOnNext(bufferdWayPoints -> this.wayPointStore.persistWayPoints(bufferdWayPoints))
             .subscribe();
@@ -63,9 +59,10 @@ public class TrackerService extends Service {
         this.subscriptions.unsubscribe();
     }
 
-    private void broadcastWayPoint(WayPoint wayPoint) {
-        Intent broadcastIntent = new Intent(Constants.WAY_POINT_BROADCAST_INTENT);
-        broadcastIntent.putExtra(Constants.WAY_POINT_BROADCAST_EXTRA_NAME, wayPoint);
+    private void broadcastWayPoint(WayPoint wayPoint, Intent startStopIntent) {
+        Intent broadcastIntent = new Intent(Constants.WAY_POINT_BROADCAST);
+        broadcastIntent.putExtra(Constants.WAY_POINT_BROADCAST_POINT_EXTRA_NAME, wayPoint);
+        broadcastIntent.putExtra(Constants.WAY_POINT_BROADCAST_INTENT_EXTRA_NAME, startStopIntent);
 
         this.sendBroadcast(broadcastIntent);
     }
