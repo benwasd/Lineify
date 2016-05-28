@@ -121,7 +121,7 @@ public class Main extends AppCompatActivity {
                     WayPoint wayPoint = (WayPoint)intent.getSerializableExtra(Constants.WAY_POINT_BROADCAST_POINT_EXTRA_NAME);
                     Intent startStopIntent = intent.getParcelableExtra(Constants.WAY_POINT_BROADCAST_INTENT_EXTRA_NAME);
 
-                    if (Main.this.trackerServiceStartStopIntent != startStopIntent) {
+                    if (Main.this.trackerServiceStartStopIntent != startStopIntent && Main.this.floatingActionButton != null) {
                         Main.this.trackerServiceStartStopIntent = startStopIntent;
                         Main.this.handleFloatingActionButtonIcon();
                     }

@@ -23,19 +23,20 @@ public class HistoryFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return this.initializeRecyclerView(inflater, container);
+        View view = inflater.inflate(R.layout.fragment_lineify_history, container, false);
+        this.initializeRecyclerView(view);
+
+        return view;
     }
 
-    private RecyclerView initializeRecyclerView(LayoutInflater inflater, ViewGroup container) {
+    private void initializeRecyclerView(View view) {
         String userEmail = Settings.Secure.getString(this.getActivity().getContentResolver(), Settings.Secure.ANDROID_ID); // TODO: Replace if we have user managment
 
         TrackRecyclerViewAdapter recyclerAdapter = new TrackRecyclerViewAdapter();
         recyclerAdapter.setData(this.wayPointRepository.getTracks(userEmail));
 
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_lineify_history, container, false);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.trackRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         recyclerView.setAdapter(recyclerAdapter);
-
-        return recyclerView;
     }
 }

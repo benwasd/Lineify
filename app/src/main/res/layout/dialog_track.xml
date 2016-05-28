@@ -4,6 +4,7 @@
     android:padding="10dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
+
     <TextView
         android:text="Bennenne diese Line um sie später einfacher wiederzufinden. Mit 'Starten' beginnt Lineify die Höhenmeter aufzuzeichnen. \n\nProbieren Sie es aus."
         android:layout_width="match_parent"
@@ -17,5 +18,6 @@
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
         android:layout_marginBottom="6dp"
-        android:hint="Track"/>
+        android:hint="Name"/>
+
 </LinearLayout>
