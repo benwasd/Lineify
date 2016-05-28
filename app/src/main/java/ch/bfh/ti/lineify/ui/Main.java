@@ -96,8 +96,8 @@ public class Main extends AppCompatActivity {
         this.tabLayout = (TabLayout) this.findViewById(R.id.tabs);
 
         PagerAdapter pagerAdapter = new PagerAdapter(this.getSupportFragmentManager());
-        pagerAdapter.addFragment(MainFragment.newInstance(0), "Tracking");
-        pagerAdapter.addFragment(HistoryFragment.newInstance(1), "History");
+        pagerAdapter.addFragment(MainFragment.newInstance(0), getString(R.string.Tracking));
+        pagerAdapter.addFragment(HistoryFragment.newInstance(1), getString(R.string.History));
         this.viewPager.setAdapter(pagerAdapter);
 
         this.tabLayout.setupWithViewPager(this.viewPager);
@@ -109,18 +109,23 @@ public class Main extends AppCompatActivity {
             if (trackerServiceIntent[0] == null) {
                 Track track = new Track("benwasd@github", "Meine Wanderung");
                 trackerServiceIntent[0] = new Intent(this, TrackerService.class);
-                trackerServiceIntent[0].putExtra(Constants.trackerServiceExtraName,track);
+                trackerServiceIntent[0].putExtra(Constants.trackerServiceExtraName, track);
 
                 startService(trackerServiceIntent[0]);
+
+                TextView tvCurStatus = (TextView) findViewById(R.id.tv_CurStatusData);
+                tvCurStatus.setText(R.string.running);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     this.floatingActionButton.setImageDrawable(getDrawable(R.drawable.ic_gps_fixed));
                 }
-            }
-            else {
+            } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     this.floatingActionButton.setImageDrawable(getDrawable(R.drawable.ic_gps_off));
                 }
+
+                TextView tvCurStatus = (TextView) findViewById(R.id.tv_CurStatusData);
+                tvCurStatus.setText(R.string.not_running);
 
                 stopService(trackerServiceIntent[0]);
 
@@ -132,9 +137,17 @@ public class Main extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction() == Constants.wayPointBroadcastIntent) {
-                    WayPoint wayPoint = (WayPoint)intent.getSerializableExtra(Constants.wayPointBroadcastExtraName);
-                    TextView tvCurStatus = (TextView) findViewById(R.id.tv_CurStatusData);
-                    tvCurStatus.setText(wayPoint.altitude()+"m, " +wayPoint.latitude()+" | " +wayPoint.longitude()+" | "+wayPoint.accuracy());
+                    WayPoint wayPoint = (WayPoint) intent.getSerializableExtra(Constants.wayPointBroadcastExtraName);
+                    TextView tvLatitude = (TextView) findViewById(R.id.tv_Latitude);
+                    TextView tvLongitude = (TextView) findViewById(R.id.tv_Longitude);
+                    TextView tvMetersAboveSealevel = (TextView) findViewById(R.id.tv_metersAboveSealevel);
+                    TextView tvAccuracy = (TextView) findViewById(R.id.tv_accuracy);
+                    double accuracy = wayPoint.accuracy();
+                    tvLatitude.setText("N" + wayPoint.latitude());
+                    tvLongitude.setText("E" + wayPoint.longitude());
+                    tvAccuracy.setText("±" + accuracy);
+                    tvMetersAboveSealevel.setText(wayPoint.altitude() + "");
+
                 }
             }
         };

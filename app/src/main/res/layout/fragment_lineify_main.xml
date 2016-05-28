@@ -11,80 +11,55 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:weightSum="1"
+        android:id="@+id/linearLayout">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_CurStatusData"
+            android:text="@string/not_running"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.07"
+            android:textSize="@dimen/abc_text_size_title_material" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/curstatus"
-                android:id="@+id/tv_CurStatus" />
+        <TextView
+            android:id="@+id/tv_Latitude"
+            android:text="00.00"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.07"
+            android:textSize="@dimen/abc_text_size_title_material" />
 
-            <TextView
-                android:id="@+id/tv_CurStatusData"
-                android:text="@string/curstatusdata"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tv_Longitude"
+            android:text="00.00"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.07"
+            android:textSize="@dimen/abc_text_size_title_material" />
 
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_accuracy"
+            android:text="±00.00"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.07"
+            android:textSize="@dimen/abc_text_size_title_material" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/curheight"
-                android:id="@+id/tv_CurAlti" />
+        <TextView
+            android:id="@+id/tv_metersAboveSealevel"
+            android:text="00.00"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.07"
+            android:textSize="@dimen/abc_text_size_title_material" />
 
-            <TextView
-                android:id="@+id/tv_CurAltiData"
-                android:text="@string/curaltidata"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/lang"
-                android:id="@+id/tv_Lang" />
-
-            <TextView
-                android:id="@+id/tv_LangData"
-                android:text="@string/langdata"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/longi"
-                android:id="@+id/tv_long" />
-
-            <TextView
-                android:id="@+id/tv_LongiData"
-                android:text="@string/longidata"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>
