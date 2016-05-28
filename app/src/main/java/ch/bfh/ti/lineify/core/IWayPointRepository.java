@@ -5,11 +5,8 @@ import java.util.UUID;
 
 import ch.bfh.ti.lineify.core.model.Track;
 import ch.bfh.ti.lineify.core.model.WayPoint;
-import retrofit2.Call;
 
-public interface IWayPointBackend {
-    Call<List<Track>> getTracks(String userEmail);
-
-    Call<List<WayPoint>> getWayPoints(UUID trackId);
+public interface IWayPointRepository {
+    rx.Observable<List<Track>> getTracks(String userEmail);
+    rx.Observable<List<WayPoint>> getWayPoints(UUID trackId);
 }
-

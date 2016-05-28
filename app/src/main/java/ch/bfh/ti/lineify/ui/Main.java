@@ -66,7 +66,7 @@ public class Main extends AppCompatActivity {
         super.onResume();
 
         if (this.wayPointReceiver != null) {
-            this.registerReceiver(this.wayPointReceiver, new IntentFilter(Constants.wayPointBroadcastIntent));
+            this.registerReceiver(this.wayPointReceiver, new IntentFilter(Constants.WAY_POINT_BROADCAST_INTENT));
         }
     }
 
@@ -109,7 +109,7 @@ public class Main extends AppCompatActivity {
             if (trackerServiceIntent[0] == null) {
                 Track track = new Track("benwasd@github", "Meine Wanderung");
                 trackerServiceIntent[0] = new Intent(this, TrackerService.class);
-                trackerServiceIntent[0].putExtra(Constants.trackerServiceExtraName, track);
+                trackerServiceIntent[0].putExtra(Constants.TRACKER_SERVICE_EXTRA_NAME,track);
 
                 startService(trackerServiceIntent[0]);
 
@@ -119,7 +119,8 @@ public class Main extends AppCompatActivity {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     this.floatingActionButton.setImageDrawable(getDrawable(R.drawable.ic_gps_fixed));
                 }
-            } else {
+            }
+            else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     this.floatingActionButton.setImageDrawable(getDrawable(R.drawable.ic_gps_off));
                 }
@@ -136,8 +137,8 @@ public class Main extends AppCompatActivity {
         this.wayPointReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getAction() == Constants.wayPointBroadcastIntent) {
-                    WayPoint wayPoint = (WayPoint) intent.getSerializableExtra(Constants.wayPointBroadcastExtraName);
+                if (intent.getAction().equals(Constants.WAY_POINT_BROADCAST_INTENT)) {
+                    WayPoint wayPoint = (WayPoint)intent.getSerializableExtra(Constants.WAY_POINT_BROADCAST_EXTRA_NAME);
                     TextView tvLatitude = (TextView) findViewById(R.id.tv_Latitude);
                     TextView tvLongitude = (TextView) findViewById(R.id.tv_Longitude);
                     TextView tvMetersAboveSealevel = (TextView) findViewById(R.id.tv_metersAboveSealevel);
@@ -147,7 +148,6 @@ public class Main extends AppCompatActivity {
                     tvLongitude.setText("E" + wayPoint.longitude());
                     tvAccuracy.setText("±" + accuracy);
                     tvMetersAboveSealevel.setText(wayPoint.altitude() + "");
-
                 }
             }
         };
