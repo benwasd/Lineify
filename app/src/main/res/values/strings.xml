@@ -22,4 +22,5 @@
     <string name="curheight">CurHeight:</string>
     <string name="curaltidata">CurAltiData</string>
     <string name="longidata">LongiData</string>
+    <string name="no_tracks_available">Keine Lines vorhanden oder Internetzugriff unmöglich.</string>
 </resources>

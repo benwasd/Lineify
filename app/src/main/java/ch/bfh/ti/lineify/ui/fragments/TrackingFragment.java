@@ -25,7 +25,7 @@ public class TrackingFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View fragmentView = inflater.inflate(R.layout.fragment_lineify_main, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_tracking, container, false);
         this.findViews(fragmentView);
         this.initializeViews();
 

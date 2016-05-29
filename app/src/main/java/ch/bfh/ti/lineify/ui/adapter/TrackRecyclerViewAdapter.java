@@ -12,14 +12,18 @@ import ch.bfh.ti.lineify.core.model.Track;
 public class TrackRecyclerViewAdapter extends RecyclerView.Adapter<TrackRecyclerViewHolder> {
     private List<Track> tracks = null;
 
-    public void setData(List<Track> tracks) {
+    public void setTracks(List<Track> tracks) {
         this.tracks = tracks;
         this.notifyDataSetChanged();
     }
 
+    public Track getTrack(int position) {
+        return this.tracks.get(position);
+    }
+
     @Override
     public TrackRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = parent.inflate(parent.getContext(), R.layout.recycler_item, null);
+        View view = parent.inflate(parent.getContext(), R.layout.recycleritem_track, null);
 
         return new TrackRecyclerViewHolder(view);
     }
