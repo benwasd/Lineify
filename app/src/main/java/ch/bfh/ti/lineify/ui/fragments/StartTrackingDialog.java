@@ -20,7 +20,7 @@ public class StartTrackingDialog extends DialogFragment {
         LayoutInflater inflater = mainActivity.getLayoutInflater();
 
         View view = inflater.inflate(R.layout.dialog_track, null);
-        EditText trackIdentifier = (EditText) view.findViewById(R.id.trackIdentifier);
+        EditText trackIdentifier = (EditText) view.findViewById(R.id.trackIdentifierEditText);
         trackIdentifier.setText(Track.defaultTrackIdentifier());
         trackIdentifier.setSelection(trackIdentifier.getText().length());
 

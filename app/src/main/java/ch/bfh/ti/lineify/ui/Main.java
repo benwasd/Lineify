@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +22,6 @@ import ch.bfh.ti.lineify.DI;
 import ch.bfh.ti.lineify.R;
 import ch.bfh.ti.lineify.core.Constants;
 import ch.bfh.ti.lineify.core.IPermissionRequestor;
-import ch.bfh.ti.lineify.core.IWayPointService;
-import ch.bfh.ti.lineify.core.IWayPointStore;
 import ch.bfh.ti.lineify.core.model.Track;
 import ch.bfh.ti.lineify.core.model.WayPoint;
 import ch.bfh.ti.lineify.infrastructure.android.TrackerService;
@@ -40,6 +37,8 @@ public class Main extends AppCompatActivity {
     private ViewPager viewPager;
     private FloatingActionButton floatingActionButton;
     private TabLayout tabLayout;
+    private TrackingFragment trackingFragment;
+    private HistoryFragment historyFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,17 +46,14 @@ public class Main extends AppCompatActivity {
 
         DI.setup(this.getApplicationContext());
 
-        IPermissionRequestor permissionRequestor = DI.container().resolve(IPermissionRequestor.class);
-        IWayPointService wayPointService = DI.container().resolve(IWayPointService.class);
-        IWayPointStore wayPointStore = DI.container().resolve(IWayPointStore.class);
-        permissionRequestor.bindRequestPermissionsResultHandler(handler -> this.permissionResultHandler = handler);
-
         this.setContentView(R.layout.activity_main);
 
+        IPermissionRequestor permissionRequestor = DI.container().resolve(IPermissionRequestor.class);
+        permissionRequestor.bindRequestPermissionsResultHandler(handler -> this.permissionResultHandler = handler);
         permissionRequestor.requestPermissions(this, () -> {
             this.initializeToolbar();
             this.initializeUi();
-            this.initialize(wayPointService, wayPointStore);
+            this.initializeEvents();
         });
     }
 
@@ -94,16 +90,18 @@ public class Main extends AppCompatActivity {
         this.viewPager = (ViewPager) this.findViewById(R.id.container);
         this.floatingActionButton = (FloatingActionButton) this.findViewById(R.id.floatingActionButton);
         this.tabLayout = (TabLayout) this.findViewById(R.id.tabs);
+        this.trackingFragment = new TrackingFragment();
+        this.historyFragment = new HistoryFragment();
 
         PagerAdapter pagerAdapter = new PagerAdapter(this.getSupportFragmentManager());
-        pagerAdapter.addFragment(new TrackingFragment(), "Tracking");
-        pagerAdapter.addFragment(new HistoryFragment(), "History");
+        pagerAdapter.addFragment(this.trackingFragment, "Tracking");
+        pagerAdapter.addFragment(this.historyFragment, "History");
         this.viewPager.setAdapter(pagerAdapter);
 
         this.tabLayout.setupWithViewPager(this.viewPager);
     }
 
-    private void initialize(IWayPointService wayPointService, IWayPointStore wayPointStore) {
+    private void initializeEvents() {
         this.floatingActionButton.setOnClickListener(v -> {
             if (this.trackerServiceStartStopIntent == null) {
                 StartTrackingDialog dialog = new StartTrackingDialog();
@@ -118,16 +116,12 @@ public class Main extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(Constants.WAY_POINT_BROADCAST)) {
-                    WayPoint wayPoint = (WayPoint)intent.getSerializableExtra(Constants.WAY_POINT_BROADCAST_POINT_EXTRA_NAME);
                     Intent startStopIntent = intent.getParcelableExtra(Constants.WAY_POINT_BROADCAST_INTENT_EXTRA_NAME);
+                    Track track = (Track) intent.getSerializableExtra(Constants.WAY_POINT_BROADCAST_TRACK_EXTRA_NAME);
+                    WayPoint wayPoint = (WayPoint) intent.getSerializableExtra(Constants.WAY_POINT_BROADCAST_POINT_EXTRA_NAME);
 
-                    if (Main.this.trackerServiceStartStopIntent != startStopIntent && Main.this.floatingActionButton != null) {
-                        Main.this.trackerServiceStartStopIntent = startStopIntent;
-                        Main.this.handleFloatingActionButtonIcon();
-                    }
-
-                    TextView tvCurStatus = (TextView) findViewById(R.id.tv_CurStatusData);
-                    tvCurStatus.setText(wayPoint.altitude()+"m, " +wayPoint.latitude()+" | " +wayPoint.longitude()+" | "+wayPoint.accuracy());
+                    Main.this.onReciveStartStopIntent(startStopIntent);
+                    Main.this.trackingFragment.onReceiveWayPoint(track, wayPoint);
                 }
             }
         };
@@ -146,6 +140,13 @@ public class Main extends AppCompatActivity {
 
         this.trackerServiceStartStopIntent = null;
         this.handleFloatingActionButtonIcon();
+    }
+
+    private void onReciveStartStopIntent(Intent startStopIntent) {
+        if (Main.this.trackerServiceStartStopIntent != startStopIntent && Main.this.floatingActionButton != null) {
+            Main.this.trackerServiceStartStopIntent = startStopIntent;
+            Main.this.handleFloatingActionButtonIcon();
+        }
     }
 
     private void handleFloatingActionButtonIcon() {

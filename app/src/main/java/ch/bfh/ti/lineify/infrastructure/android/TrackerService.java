@@ -40,7 +40,7 @@ public class TrackerService extends Service {
         this.wayPointStore.persistTrack(track);
 
         Subscription localPersistSubscription = this.wayPointService.trackLocation(track.id())
-            .doOnNext(wayPoint -> this.broadcastWayPoint(wayPoint, startStopIntent))
+            .doOnNext(wayPoint -> this.broadcastWayPoint(track, wayPoint, startStopIntent))
             .buffer(15, TimeUnit.SECONDS)
             .doOnNext(bufferdWayPoints -> this.wayPointStore.persistWayPoints(bufferdWayPoints))
             .subscribe();
@@ -59,8 +59,9 @@ public class TrackerService extends Service {
         this.subscriptions.unsubscribe();
     }
 
-    private void broadcastWayPoint(WayPoint wayPoint, Intent startStopIntent) {
+    private void broadcastWayPoint(Track track, WayPoint wayPoint, Intent startStopIntent) {
         Intent broadcastIntent = new Intent(Constants.WAY_POINT_BROADCAST);
+        broadcastIntent.putExtra(Constants.WAY_POINT_BROADCAST_TRACK_EXTRA_NAME, track);
         broadcastIntent.putExtra(Constants.WAY_POINT_BROADCAST_POINT_EXTRA_NAME, wayPoint);
         broadcastIntent.putExtra(Constants.WAY_POINT_BROADCAST_INTENT_EXTRA_NAME, startStopIntent);
 

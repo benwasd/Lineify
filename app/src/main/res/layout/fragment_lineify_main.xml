@@ -17,67 +17,15 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/curstatus"
-                android:id="@+id/tv_CurStatus" />
-            <TextView
-                android:id="@+id/tv_CurStatusData"
-                android:text="@string/curstatusdata"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/curheight"
-                android:id="@+id/tv_CurAlti" />
-            <TextView
-                android:id="@+id/tv_CurAltiData"
-                android:text="@string/curaltidata"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/asdasdasdasdasdasdTextView"
                 android:text="@string/lang"
-                android:id="@+id/tv_Lang" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
             <TextView
-                android:id="@+id/tv_LangData"
+                android:id="@+id/aaaaaaasdTextView"
                 android:text="@string/langdata"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/longi"
-                android:id="@+id/tv_long" />
-            <TextView
-                android:id="@+id/tv_LongiData"
-                android:text="@string/longidata"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
         </LinearLayout>
 
     </LinearLayout>
