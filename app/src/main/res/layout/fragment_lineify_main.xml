@@ -12,20 +12,99 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingTop="50dp"
+            android:paddingBottom="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/asdasdasdasdasdasdTextView"
-                android:text="@string/lang"
+                android:id="@+id/altitudeTextView"
+                android:text="000"
+                android:fontFamily="sans-serif-condensed"
+                android:textSize="100dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
-                android:id="@+id/aaaaaaasdTextView"
-                android:text="@string/langdata"
+                android:text="Meter über Meer"
+                android:fontFamily="sans-serif-condensed"
+                android:textSize="21dp"
+                android:textAlignment="center"
+                android:layout_marginTop="-20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="left"
+                android:layout_width="280dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/trackIdentifierTextView"
+                    android:text="Meine wanderung"
+                    android:textSize="17dp"
+                    android:textAlignment="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="left"
+                android:layout_width="280dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/wayPointsTextView"
+                    android:text="0"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textSize="17dp"
+                    android:textAlignment="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:text=" Messpunkte"
+                    android:textSize="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="left"
+                android:layout_width="280dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="Momentane Genauigkeit von +/- "
+                    android:textSize="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/accuracyTextView"
+                    android:text="1"
+                    android:textSize="17dp"
+                    android:textAlignment="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:text="m"
+                    android:textSize="17dp"
+                    android:textAlignment="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>

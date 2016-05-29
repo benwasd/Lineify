@@ -83,7 +83,6 @@ public class Main extends AppCompatActivity {
     private void initializeToolbar() {
         Toolbar toolbar = (Toolbar) this.findViewById(R.id.toolbar);
         this.setSupportActionBar(toolbar);
-        this.setTitle(getString(R.string.app_name));
     }
 
     private void initializeUi() {

@@ -21,7 +21,7 @@ public class StartTrackingDialog extends DialogFragment {
 
         View view = inflater.inflate(R.layout.dialog_track, null);
         EditText trackIdentifier = (EditText) view.findViewById(R.id.trackIdentifierEditText);
-        trackIdentifier.setText(Track.defaultTrackIdentifier());
+        trackIdentifier.setText(Track.defaultIdentifier());
         trackIdentifier.setSelection(trackIdentifier.getText().length());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
@@ -31,7 +31,7 @@ public class StartTrackingDialog extends DialogFragment {
                 String text = trackIdentifier.getText().toString();
 
                 if (text.equals(null) || text.equals("")) {
-                    text = Track.defaultTrackIdentifier();
+                    text = Track.defaultIdentifier();
                 }
 
                 mainActivity.startTracker(new Track(userEmail, text));

@@ -11,6 +11,7 @@ import ch.bfh.ti.lineify.DI;
 import ch.bfh.ti.lineify.core.Constants;
 import ch.bfh.ti.lineify.core.IWayPointService;
 import ch.bfh.ti.lineify.core.IWayPointStore;
+import ch.bfh.ti.lineify.core.ListUtils;
 import ch.bfh.ti.lineify.core.model.Track;
 import ch.bfh.ti.lineify.core.model.WayPoint;
 import rx.Subscription;
@@ -39,10 +40,10 @@ public class TrackerService extends Service {
 
         this.wayPointStore.persistTrack(track);
 
-        Subscription localPersistSubscription = this.wayPointService.trackLocation(track.id())
+        Subscription localPersistSubscription = this.wayPointService.trackLocation(track)
             .doOnNext(wayPoint -> this.broadcastWayPoint(track, wayPoint, startStopIntent))
             .buffer(15, TimeUnit.SECONDS)
-            .doOnNext(bufferdWayPoints -> this.wayPointStore.persistWayPoints(bufferdWayPoints))
+            .doOnNext(bufferdWayPoints -> this.wayPointStore.persistWayPoints(ListUtils.filter(bufferdWayPoints, w -> w.isRelevant(bufferdWayPoints))))
             .subscribe();
 
         Subscription syncSubscription = rx.Observable.interval(1, TimeUnit.MINUTES)

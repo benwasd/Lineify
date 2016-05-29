@@ -6,11 +6,13 @@ import android.location.Location;
 import com.google.android.gms.location.LocationRequest;
 
 import java.util.List;
-import java.util.UUID;
 
 import ch.bfh.ti.lineify.core.IWayPointService;
+import ch.bfh.ti.lineify.core.model.Track;
 import ch.bfh.ti.lineify.core.model.WayPoint;
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
+
+import static ch.bfh.ti.lineify.core.model.WayPoint.*;
 
 public class WayPointService implements IWayPointService {
     private final Context context;
@@ -20,13 +22,14 @@ public class WayPointService implements IWayPointService {
     }
 
     @Override
-    public rx.Observable<WayPoint> trackLocation(UUID trackId) {
+    public rx.Observable<WayPoint> trackLocation(Track track) {
         ReactiveLocationProvider locationProvider = new ReactiveLocationProvider(this.context);
         return locationProvider.getUpdatedLocation(this.buildLocationRequest())
-            .filter(location -> location.hasAltitude())
             .buffer(8, 5)
             .map(locations -> optimize(locations))
-            .map(location -> new WayPoint(trackId, location.getAltitude(), location.getLongitude(), location.getLatitude(), location.getAccuracy()));
+            .doOnNext(l -> track.incrementWayPointCount())
+            .map(location -> new WayPoint(track.id(), getSwissAltitude(location.getAltitude()), location.getLongitude(), location.getLatitude(), location.getAccuracy()))
+            .filter(wayPoint -> wayPoint.hasPlausibleAltitude());
     }
 
     private LocationRequest buildLocationRequest() {
