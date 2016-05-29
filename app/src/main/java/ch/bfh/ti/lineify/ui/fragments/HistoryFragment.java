@@ -14,16 +14,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import ch.bfh.ti.lineify.DI;
 import ch.bfh.ti.lineify.R;
 import ch.bfh.ti.lineify.core.Constants;
 import ch.bfh.ti.lineify.core.IWayPointRepository;
-import ch.bfh.ti.lineify.core.model.Track;
 import ch.bfh.ti.lineify.ui.TrackDetailActivity;
 import ch.bfh.ti.lineify.ui.adapter.IItemTouchListener;
 import ch.bfh.ti.lineify.ui.adapter.TouchListener;
@@ -68,14 +63,13 @@ public class HistoryFragment extends Fragment {
 
     private void initializeViews() {
         this.recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-        //this.recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), LinearLayoutManager.VERTICAL));
+        this.recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         this.recyclerView.setAdapter(this.recyclerAdapter);
 
         this.recyclerView.addOnItemTouchListener(new TouchListener(this.getContext(), this.recyclerView, new IItemTouchListener() {
             @Override
             public void onClick(View view, int position) {
-                Log.i("addOnItemTouchListener", "Short Pos: " + position);
                 Intent intent = new Intent(HistoryFragment.this.getContext(), TrackDetailActivity.class);
                 intent.putExtra(Constants.TRACK_DETAIL_ACTIVITY_TRACK_EXTRA_NAME, recyclerAdapter.getTrack(position));
                 HistoryFragment.this.startActivity(intent);
@@ -83,7 +77,6 @@ public class HistoryFragment extends Fragment {
 
             @Override
             public void onLongClick(View view, int position) {
-                Log.i("addOnItemTouchListener", "LONG Pos: " + position);
             }
         }));
 
@@ -97,24 +90,13 @@ public class HistoryFragment extends Fragment {
 
         this.swipeRefreshLayout.setRefreshing(true);
         this.wayPointRepository.getTracks(userEmail).subscribe(
-            t -> {
-                this.recyclerAdapter.setTracks(t);
-                if(t.size() > 0) {
-
-                }
-            },
+            t -> this.recyclerAdapter.setTracks(t),
             e -> {
-                Snackbar.make(this.getView(), "Fehler beim Laden der Lines. Prüfe deine Netzwerkeinstellungen.", Snackbar.LENGTH_LONG).show();
-
-                List<Track> dummyTracks = new ArrayList<>();
-                dummyTracks.add(new Track("mail","identifier"));
-
-                this.recyclerAdapter.setTracks(dummyTracks);
+                Log.e("HistoryFragment", "Error while loading tracks.", e);
+                Snackbar.make(this.getView(), R.string.load_lines_network_error, Snackbar.LENGTH_LONG).show();
                 this.swipeRefreshLayout.setRefreshing(false);
             },
-            () -> {
-                this.swipeRefreshLayout.setRefreshing(false);
-            }
+            () -> this.swipeRefreshLayout.setRefreshing(false)
         );
     }
 }
