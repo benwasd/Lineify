@@ -1,7 +1,6 @@
 package ch.bfh.ti.lineify.ui.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -13,21 +12,16 @@ import ch.bfh.ti.lineify.core.model.Track;
 public class TrackRecyclerViewAdapter extends RecyclerView.Adapter<TrackRecyclerViewHolder> {
     private List<Track> tracks = null;
 
-    public void setData(rx.Observable<List<Track>> tracks) {
-        tracks.subscribe(
-            t -> {
-                this.tracks = t;
-                this.notifyDataSetChanged();
-            },
-            e -> Log.i("TrackRecyclerView", "Error getting tracks", e)
-        );
+    public void setData(List<Track> tracks) {
+        this.tracks = tracks;
+        this.notifyDataSetChanged();
     }
 
     @Override
     public TrackRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = parent.inflate(parent.getContext(), R.layout.recycler_item, null);
 
-        return TrackRecyclerViewHolder.create(view);
+        return new TrackRecyclerViewHolder(view);
     }
 
     @Override

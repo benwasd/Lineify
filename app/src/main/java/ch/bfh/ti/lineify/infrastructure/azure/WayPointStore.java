@@ -111,6 +111,7 @@ public class WayPointStore implements IWayPointStore {
 
                 Map<String, ColumnDataType> tableDefinition = new HashMap<>();
                 tableDefinition.put("id", ColumnDataType.String);
+                tableDefinition.put("created", ColumnDataType.Date);
                 tableDefinition.put("identifier", ColumnDataType.String);
                 tableDefinition.put("userEmail", ColumnDataType.String);
                 localStore.defineTable("Track", tableDefinition);
