@@ -28,7 +28,7 @@ public class TrackDetailActivity extends AppCompatActivity {
     private List<WayPoint> wpList;
     private EditText multiText;
     private Toolbar toolbar;
-    private java.text.DateFormat dateFormat = java.text.DateFormat.getDateInstance();
+    private java.text.DateFormat dateFormat = java.text.DateFormat.getDateTimeInstance();
 
 
     @Override
