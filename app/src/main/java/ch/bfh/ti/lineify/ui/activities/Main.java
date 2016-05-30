@@ -99,7 +99,6 @@ public class Main extends AppCompatActivity {
         this.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -109,7 +108,6 @@ public class Main extends AppCompatActivity {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
 
@@ -184,17 +182,11 @@ public class Main extends AppCompatActivity {
             case 0:
                 floatingActionButton.show();
                 break;
-            case 1:
-                floatingActionButton.hide();
-                break;
-
             default:
                 floatingActionButton.hide();
                 break;
         }
     }
-
-
 
     public static class PagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> fragmentList = new ArrayList<>();
