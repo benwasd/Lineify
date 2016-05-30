@@ -31,7 +31,7 @@ public class TrackRecyclerViewAdapter extends RecyclerView.Adapter<TrackRecycler
     @Override
     public void onBindViewHolder(TrackRecyclerViewHolder viewHolder, int position) {
         if (this.tracks != null) {
-            Track track = this.tracks.get(position);
+            Track track = this.getTrack(position);
             viewHolder.bindTrack(track);
         }
     }

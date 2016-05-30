@@ -25,7 +25,7 @@ public class WayPointService implements IWayPointService {
     public rx.Observable<WayPoint> trackLocation(Track track) {
         ReactiveLocationProvider locationProvider = new ReactiveLocationProvider(this.context);
         return locationProvider.getUpdatedLocation(this.buildLocationRequest())
-            .buffer(8, 5)
+            .buffer(6, 4)
             .map(locations -> optimize(locations))
             .doOnNext(l -> track.incrementWayPointCount())
             .map(location -> new WayPoint(track.id(), getSwissAltitude(location.getAltitude()), location.getLongitude(), location.getLatitude(), location.getAccuracy()))

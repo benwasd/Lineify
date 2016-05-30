@@ -1,5 +1,7 @@
 package ch.bfh.ti.lineify.core.model;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +64,9 @@ public class WayPoint implements Serializable {
         double altitudeMedian = altitudeMedian(nearbyPlausibleWayPoints);
         double deviation = Math.abs(altitudeMedian - this.altitude());
 
-        return deviation < 8;
+        Log.d("WayPoint", String.format("WayPoint '%s', altitude='%.3f' accuracy='%.3f' deviation='%.3f' medianPoints='%d'", this.id().toString(), this.altitude(), this.accuracy(), deviation, nearbyPlausibleWayPoints.size()));
+
+        return deviation < 15;
     }
 
     public static double getSwissAltitude(double wgs84Altitude) {
