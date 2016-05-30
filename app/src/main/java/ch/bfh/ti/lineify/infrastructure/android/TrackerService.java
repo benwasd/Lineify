@@ -42,7 +42,7 @@ public class TrackerService extends Service {
 
         Subscription localPersistSubscription = this.wayPointService.trackLocation(track)
             .doOnNext(wayPoint -> this.broadcastWayPoint(track, wayPoint, startStopIntent))
-            .buffer(15, TimeUnit.SECONDS)
+            .buffer(40, TimeUnit.SECONDS)
             .doOnNext(bufferdWayPoints -> this.wayPointStore.persistWayPoints(ListUtils.filter(bufferdWayPoints, w -> w.isRelevant(bufferdWayPoints))))
             .subscribe();
 

@@ -31,7 +31,7 @@ public class WayPointRepository implements IWayPointRepository {
     @Override
     public rx.Observable<List<Track>> getTracks(String userEmail) {
         return rx.Observable.create(observer ->
-            this.restApiDefinition.queryTracks("userEmail eq '" + userEmail + "'").enqueue(new Callback<List<Track>>() {
+            this.restApiDefinition.queryTracks("userEmail eq '" + userEmail + "'", "identifier asc").enqueue(new Callback<List<Track>>() {
                 @Override
                 public void onResponse(Call<List<Track>> call, Response<List<Track>> response) {
                     observer.onNext(response.body());
@@ -49,7 +49,7 @@ public class WayPointRepository implements IWayPointRepository {
     @Override
     public rx.Observable<List<WayPoint>> getWayPoints(UUID trackId) {
         return rx.Observable.create(observer ->
-            this.restApiDefinition.queryWayPoint("trackid eq '" + trackId + "'").enqueue(new Callback<List<WayPoint>>() {
+            this.restApiDefinition.queryWayPoint("trackid eq '" + trackId + "'", "created asc").enqueue(new Callback<List<WayPoint>>() {
                 @Override
                 public void onResponse(Call<List<WayPoint>> call, Response<List<WayPoint>> response) {
                     observer.onNext(response.body());
@@ -67,10 +67,10 @@ public class WayPointRepository implements IWayPointRepository {
     public interface IRestApiDefinition {
         @Headers("ZUMO-API-VERSION: 2.0.0")
         @GET("tables/Track")
-        Call<List<Track>> queryTracks(@Query("$filter") String filter);
+        Call<List<Track>> queryTracks(@Query("$filter") String filter, @Query("$orderby") String orderBy);
 
         @Headers("ZUMO-API-VERSION: 2.0.0")
         @GET("tables/WayPoint")
-        Call<List<WayPoint>> queryWayPoint(@Query("$filter") String filter);
+        Call<List<WayPoint>> queryWayPoint(@Query("$filter") String filter, @Query("$orderby") String orderBy);
     }
 }

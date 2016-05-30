@@ -2,9 +2,7 @@ package ch.bfh.ti.lineify;
 
 import org.junit.Test;
 
-import ch.bfh.ti.lineify.core.model.Track;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * To work on unit tests, switch the Test Artifact in the Build Variants view.

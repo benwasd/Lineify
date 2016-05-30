@@ -1,7 +1,6 @@
 package ch.bfh.ti.lineify.core.dependencyInjection;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import ch.bfh.ti.lineify.core.IFactory;
 import ch.bfh.ti.lineify.core.dependencyInjection.exceptions.ResolveError;
