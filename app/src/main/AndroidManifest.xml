@@ -22,7 +22,7 @@
         <service android:name=".infrastructure.android.TrackerService" />
 
         <activity
-            android:name=".ui.Main"
+            android:name=".ui.activities.Main"
             android:label="Lineify"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
@@ -31,7 +31,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.TrackDetailActivity"
+        <activity android:name=".ui.activities.TrackDetail"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
         </activity>

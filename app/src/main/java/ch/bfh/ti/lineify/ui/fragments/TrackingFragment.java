@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import ch.bfh.ti.lineify.R;
@@ -17,6 +18,7 @@ public class TrackingFragment extends Fragment {
     private TextView trackIdentifierTextView;
     private TextView wayPointsTextView;
     private TextView accuracyTextView;
+    private LinearLayout trackingInfoGroup;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class TrackingFragment extends Fragment {
         this.trackIdentifierTextView = (TextView) fragmentView.findViewById(R.id.trackIdentifierTextView);
         this.wayPointsTextView = (TextView) fragmentView.findViewById(R.id.wayPointsTextView);
         this.accuracyTextView = (TextView) fragmentView.findViewById(R.id.accuracyTextView);
+        this.trackingInfoGroup = (LinearLayout) fragmentView.findViewById(R.id.trackingInfoGroup);
     }
 
     private void initializeViews() {

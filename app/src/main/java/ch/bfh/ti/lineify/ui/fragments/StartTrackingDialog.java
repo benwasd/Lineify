@@ -11,7 +11,7 @@ import android.widget.EditText;
 
 import ch.bfh.ti.lineify.R;
 import ch.bfh.ti.lineify.core.model.Track;
-import ch.bfh.ti.lineify.ui.Main;
+import ch.bfh.ti.lineify.ui.activities.Main;
 
 public class StartTrackingDialog extends DialogFragment {
     @Override

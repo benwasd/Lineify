@@ -1,4 +1,4 @@
-package ch.bfh.ti.lineify.ui;
+package ch.bfh.ti.lineify.ui.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -96,6 +96,22 @@ public class Main extends AppCompatActivity {
         pagerAdapter.addFragment(this.trackingFragment, "Tracking");
         pagerAdapter.addFragment(this.historyFragment, "History");
         this.viewPager.setAdapter(pagerAdapter);
+        this.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                handleFloatingActionButtonVisibility(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         this.tabLayout.setupWithViewPager(this.viewPager);
     }
@@ -160,6 +176,23 @@ public class Main extends AppCompatActivity {
             }
         }
     }
+
+    private void handleFloatingActionButtonVisibility(int position) {
+        switch (position) {
+            case 0:
+                floatingActionButton.show();
+                break;
+            case 1:
+                floatingActionButton.hide();
+                break;
+
+            default:
+                floatingActionButton.hide();
+                break;
+        }
+    }
+
+
 
     public static class PagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> fragmentList = new ArrayList<>();

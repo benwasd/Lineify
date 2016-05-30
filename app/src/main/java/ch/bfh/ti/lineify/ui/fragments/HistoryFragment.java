@@ -19,7 +19,7 @@ import ch.bfh.ti.lineify.DI;
 import ch.bfh.ti.lineify.R;
 import ch.bfh.ti.lineify.core.Constants;
 import ch.bfh.ti.lineify.core.IWayPointRepository;
-import ch.bfh.ti.lineify.ui.TrackDetailActivity;
+import ch.bfh.ti.lineify.ui.activities.TrackDetail;
 import ch.bfh.ti.lineify.ui.adapter.IItemTouchListener;
 import ch.bfh.ti.lineify.ui.adapter.TouchListener;
 import ch.bfh.ti.lineify.ui.adapter.TrackRecyclerViewAdapter;
@@ -70,7 +70,7 @@ public class HistoryFragment extends Fragment {
         this.recyclerView.addOnItemTouchListener(new TouchListener(this.getContext(), this.recyclerView, new IItemTouchListener() {
             @Override
             public void onClick(View view, int position) {
-                Intent intent = new Intent(HistoryFragment.this.getContext(), TrackDetailActivity.class);
+                Intent intent = new Intent(HistoryFragment.this.getContext(), TrackDetail.class);
                 intent.putExtra(Constants.TRACK_DETAIL_ACTIVITY_TRACK_EXTRA_NAME, recyclerAdapter.getTrack(position));
                 HistoryFragment.this.startActivity(intent);
             }
