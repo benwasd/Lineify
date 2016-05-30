@@ -56,4 +56,18 @@ public class TrackingFragment extends Fragment {
         this.wayPointsTextView.setText(String.format("%d", track.wayPointCount()));
         this.accuracyTextView.setText(String.format("%.0f", wayPoint.accuracy() / 2)); // User should trust this app, show an optimized accuracy
     }
+
+    public void handleServiceState(Track track) {
+        this.trackingInfoGroup.setVisibility(View.VISIBLE);
+
+        this.trackIdentifierTextView.setText(track.identifier());
+        this.wayPointsTextView.setText(String.format("%d", track.wayPointCount()));
+        this.accuracyTextView.setText(" ");
+    }
+
+    public void handleServiceState() {
+        this.trackingInfoGroup.setVisibility(View.INVISIBLE);
+
+        this.altitudeTextView.setText("- - -");
+    }
 }
