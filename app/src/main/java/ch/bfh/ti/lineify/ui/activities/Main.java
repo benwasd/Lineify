@@ -146,6 +146,7 @@ public class Main extends AppCompatActivity {
         this.trackerServiceStartStopIntent = new Intent(this, TrackerService.class);
         this.trackerServiceStartStopIntent.putExtra(Constants.TRACKER_SERVICE_TRACK_EXTRA_NAME, track);
         this.handleFloatingActionButtonIcon();
+        this.trackingFragment.handleServiceState(track);
 
         this.startService(trackerServiceStartStopIntent);
     }
@@ -155,6 +156,7 @@ public class Main extends AppCompatActivity {
 
         this.trackerServiceStartStopIntent = null;
         this.handleFloatingActionButtonIcon();
+        this.trackingFragment.handleServiceState();
     }
 
     private void onReciveStartStopIntent(Intent startStopIntent) {
