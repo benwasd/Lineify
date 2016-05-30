@@ -1,16 +1,13 @@
-package ch.bfh.ti.lineify.ui;
+package ch.bfh.ti.lineify.ui.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -21,7 +18,7 @@ import ch.bfh.ti.lineify.core.IWayPointRepository;
 import ch.bfh.ti.lineify.core.model.Track;
 import ch.bfh.ti.lineify.core.model.WayPoint;
 
-public class TrackDetailActivity extends AppCompatActivity {
+public class TrackDetail extends AppCompatActivity {
     private ListView listView;
     private Track track;
     private IWayPointRepository wayPointRepository;
@@ -75,13 +72,13 @@ public class TrackDetailActivity extends AppCompatActivity {
         this.multiText.setText("");
         this.wayPointRepository.getWayPoints(this.track.id()).subscribe(
                 w -> {
-                    Log.i("TrackDetailActivity", "Loading Waypoints..");
+                    Log.i("TrackDetail", "Loading Waypoints..");
                     for(WayPoint wayPoint : w){
                         this.multiText.append(wayPoint.created()+"|"+wayPoint.altitude()+"\n");
                     }
                 },
                 e -> {
-                    Log.e("TrackDetailActivity", "Error while loading WayPoints.", e);
+                    Log.e("TrackDetail", "Error while loading WayPoints.", e);
                     this.multiText.setText("Error while loading WayPoints.");
                 }
         );
