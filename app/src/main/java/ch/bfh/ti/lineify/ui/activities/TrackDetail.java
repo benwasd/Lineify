@@ -61,8 +61,8 @@ public class TrackDetail extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.home:
-                finish();
+            case android.R.id.home:
+                this.finish();
                 return true;
         }
 
