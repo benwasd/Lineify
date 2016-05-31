@@ -2,44 +2,43 @@ package ch.bfh.ti.lineify;
 
 import android.content.Context;
 
+import java.util.HashMap;
+
 import ch.bfh.ti.lineify.core.dependencyInjection.DependencyContainer;
 import ch.bfh.ti.lineify.core.dependencyInjection.IDependencyContainer;
 
 public class DI {
-    private static Object setupLockPad = new Object();
-    private static IDependencyContainer dependencyContainer;
+    private final static Object dependencyContainersLockPad = new Object();
+    private static HashMap<Context, IDependencyContainer> dependencyContainers = new HashMap<>();
 
-    public static IDependencyContainer container() {
-        if (!isAlreadySetUp()) {
-            throw new Error("Dependency container not set up.");
+    public static IDependencyContainer container(Context applicationContext) {
+        if (!isAlreadySetup(applicationContext)) {
+            setup(applicationContext);
         }
 
-        return dependencyContainer;
+        return dependencyContainers.get(applicationContext);
     }
 
-    public static void setup(Context applicationContext) {
-        synchronized (setupLockPad) {
-            if (!isAlreadySetUp()) {
-                setupDependencyContainer();
-                setupApplicationContextInContainer(applicationContext);
+    private static boolean isAlreadySetup(Context applicationContext) {
+        return dependencyContainers.containsKey(applicationContext);
+    }
+
+    private static void setup(Context applicationContext) {
+        synchronized (dependencyContainersLockPad) {
+            if (!isAlreadySetup(applicationContext)) {
+                dependencyContainers.put(applicationContext, createDependencyContainer(applicationContext));
             }
         }
     }
 
-    public static boolean isAlreadySetUp() {
-        return dependencyContainer != null;
-    }
-
-    private static void setupDependencyContainer() {
+    private static IDependencyContainer createDependencyContainer(Context applicationContext) {
         IDependencyContainer container = new DependencyContainer();
         ch.bfh.ti.lineify.core.Registry.initializeDependencies(container);
         ch.bfh.ti.lineify.infrastructure.Registry.initializeDependencies(container);
         ch.bfh.ti.lineify.ui.Registry.initializeDependencies(container);
 
-        dependencyContainer = container;
-    }
+        container.registerContainerControlled(Context.class, () -> applicationContext);
 
-    private static void setupApplicationContextInContainer(Context applicationContext) {
-        dependencyContainer.registerContainerControlled(Context.class, () -> applicationContext);
+        return container;
     }
 }

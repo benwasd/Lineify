@@ -1,4 +1,4 @@
-# Lineify [![CircleCI](https://circleci.com/gh/benwasd/Lineify/tree/master.svg?style=svg)](https://circleci.com/gh/benwasd/Lineify/tree/master)
+# ![Icon][icon]Lineify [![CircleCI](https://circleci.com/gh/benwasd/Lineify/tree/master.svg?style=svg)](https://circleci.com/gh/benwasd/Lineify/tree/master)
 Unsere App wird mithilfe der Smartphone-Sensoren Daten loggen, um im den Bergen die "Lines" (Abfahrten, Strecken) aufzuzeichnen. Diese Daten werden wir in ein Backend schicken. In der App soll es verschiedene Auswertungsarten (Graphen, Listen etc.) geben. Es könnte auch ein Ranking mit anderen Skifahrern geben.
 
 ## MUST Features
@@ -18,3 +18,4 @@ Unsere App wird mithilfe der Smartphone-Sensoren Daten loggen, um im den Bergen 
 30.04.2016 Tracking der Höhe und UI
 
 
+[icon]: https://raw.githubusercontent.com/benwasd/Lineify/master/app/src/main/res/mipmap-mdpi/ic_launcher.png "Logo Lineify"

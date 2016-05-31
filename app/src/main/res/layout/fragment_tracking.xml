@@ -37,12 +37,11 @@
 
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/trackingInfoGroup"
+            android:id="@+id/trackingInfoLinearLayout"
             android:orientation="vertical"
             android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="invisible">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:orientation="horizontal"

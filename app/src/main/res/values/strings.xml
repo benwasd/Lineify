@@ -24,4 +24,8 @@
     <string name="longidata">LongiData</string>
     <string name="no_tracks_available">Keine Lines vorhanden oder Internetzugriff unmöglich.</string>
     <string name="load_lines_network_error">Fehler beim Laden der Lines. Prüfe deine Netzwerkeinstellungen.</string>
+    <string name="NoDataTextDescription">You need to provide data for the chart.</string>
+    <string name="MeterUeberMeer">Meter über Meer</string>
+    <string name="abort">Abbrechen</string>
+    <string name="start">Starten</string>
 </resources>

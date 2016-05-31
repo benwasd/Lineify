@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -14,30 +13,56 @@ import ch.bfh.ti.lineify.core.model.Track;
 import ch.bfh.ti.lineify.ui.activities.Main;
 
 public class StartTrackingDialog extends DialogFragment {
+    private final Main mainActivity;
+    private EditText trackIdentifierEditText;
+
+    public StartTrackingDialog(Main mainActivity) {
+        this.mainActivity = mainActivity;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Main mainActivity = (Main) this.getActivity();
-        LayoutInflater inflater = mainActivity.getLayoutInflater();
+        return new AlertDialog.Builder(this.mainActivity)
+            .setView(this.onCreateView(this.mainActivity.getLayoutInflater()))
+            .setPositiveButton(R.string.start, (dialog, id) -> this.start())
+            .setNegativeButton(R.string.abort, (dialog, id) -> this.cancel())
+            .create();
+    }
 
-        View view = inflater.inflate(R.layout.dialog_track_identifier, null);
-        EditText trackIdentifier = (EditText) view.findViewById(R.id.trackIdentifierEditText);
-        trackIdentifier.setText(Track.defaultIdentifier());
-        trackIdentifier.setSelection(trackIdentifier.getText().length());
+    public View onCreateView(LayoutInflater inflater) {
+        View dialogView = inflater.inflate(R.layout.dialog_track_identifier, null, false);
+        this.findViews(dialogView);
+        this.initializeViews();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-        builder.setView(view)
-            .setPositiveButton("Starten", (dialog, id) -> {
-                String userEmail = Settings.Secure.getString(mainActivity.getContentResolver(), Settings.Secure.ANDROID_ID); // TODO: Replace if we have user managment
-                String text = trackIdentifier.getText().toString();
+        return dialogView;
+    }
 
-                if (text.equals(null) || text.equals("")) {
-                    text = Track.defaultIdentifier();
-                }
+    private void findViews(View dialogView) {
+        this.trackIdentifierEditText = (EditText) dialogView.findViewById(R.id.trackIdentifierEditText);
+    }
 
-                mainActivity.startTracker(new Track(userEmail, text));
-            })
-            .setNegativeButton("Abbrechen", (dialog, id) -> this.getDialog().cancel());
+    private void initializeViews() {
+        this.trackIdentifierEditText.setText(Track.defaultIdentifier());
+        this.trackIdentifierEditText.setSelection(trackIdentifierEditText.getText().length());
+    }
 
-        return builder.create();
+    private void start() {
+        String userEmail = UserManagement.getCurrentUsersEmail(this.getActivity());
+        String text = this.trackIdentifierEditText.getText().toString();
+
+        if (text.equals(null) || text.equals("")) {
+            text = Track.defaultIdentifier();
+        }
+
+        this.mainActivity.startTracker(new Track(userEmail, text));
+    }
+
+    private void cancel() {
+        this.getDialog().cancel();
     }
 }
