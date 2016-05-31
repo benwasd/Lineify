@@ -1,31 +1,6 @@
 <resources>
     <string name="app_name">Lineify</string>
-
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="title_activity_lineify_main">LineifyMain</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="communicate">Communicate</string>
-    <string name="new_tracking">New Tracking</string>
-    <string name="history">History</string>
-    <string name="settings">Settings</string>
-    <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-    <string name="curstatus">CurStatus:</string>
-    <string name="curstatusdata">CurStatusData</string>
-    <string name="lang">Lang:</string>
-    <string name="langdata">LangData</string>
-    <string name="longi">Long:</string>
-    <string name="curheight">CurHeight:</string>
-    <string name="curaltidata">CurAltiData</string>
-    <string name="longidata">LongiData</string>
-    <string name="no_tracks_available">Keine Lines vorhanden oder Internetzugriff unmöglich.</string>
     <string name="load_lines_network_error">Fehler beim Laden der Lines. Prüfe deine Netzwerkeinstellungen.</string>
-    <string name="NoDataTextDescription">You need to provide data for the chart.</string>
-    <string name="MeterUeberMeer">Meter über Meer</string>
     <string name="abort">Abbrechen</string>
     <string name="start">Starten</string>
 </resources>

@@ -87,9 +87,10 @@ public class TrackDetail extends AppCompatActivity {
 
         this.lineChart.setDescription("setDescription");
         this.lineChart.setNoDataTextDescription("setNoDataTextDescription");
+        this.lineChart.getLegend().setEnabled(false);
         this.lineChart.setTouchEnabled(true);
         this.lineChart.setAutoScaleMinMaxEnabled(false);
-        this.lineChart.getLegend().setEnabled(false);
+        this.lineChart.setHardwareAccelerationEnabled(true);
 
         this.loadWayPoints();
     }
@@ -161,7 +162,7 @@ public class TrackDetail extends AppCompatActivity {
     }
 
     private static void setData(LineChart lineChart, List<String> labels, List<Entry> values) {
-        LineDataSet lineDataSet = new LineDataSet(values, "VALUES");
+        LineDataSet lineDataSet = new LineDataSet(values, "");
         LineData line = new LineData()
         {{
             setXVals(labels);
@@ -170,7 +171,6 @@ public class TrackDetail extends AppCompatActivity {
         }};
 
         lineChart.setData(line);
-        lineChart.getAxisLeft().setAxisMaxValue(700);
         lineChart.getAxisLeft().setAxisMinValue(0);
         lineChart.invalidate();
     }

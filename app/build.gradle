@@ -48,5 +48,7 @@ dependencies {
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.5'
 }
 repositories {
-    maven { url "https://jitpack.io" }
+    maven {
+        url "https://jitpack.io"
+    }
 }
