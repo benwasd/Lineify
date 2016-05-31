@@ -34,11 +34,6 @@ public class TrackingFragment extends Fragment {
         return fragmentView;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
     public void findViews(View fragmentView) {
         this.altitudeTextView = (TextView) fragmentView.findViewById(R.id.altitudeTextView);
         this.trackIdentifierTextView = (TextView) fragmentView.findViewById(R.id.trackIdentifierTextView);

@@ -74,6 +74,15 @@ public class WayPoint implements Serializable {
         return wgs84Altitude - 48.893;
     }
 
+    public static double averageForChart(List<WayPoint> wayPoints) {
+        double sum = 0;
+        for (WayPoint wayPoint : wayPoints) {
+            sum += wayPoint.altitude();
+        }
+
+        return sum / wayPoints.size();
+    }
+
     private static double altitudeMedian(List<WayPoint> wayPoints) {
         Collections.sort(new ArrayList<>(wayPoints), (a, b) -> Double.compare(a.altitude(), b.altitude()));
 

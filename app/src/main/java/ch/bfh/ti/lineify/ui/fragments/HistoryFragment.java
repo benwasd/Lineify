@@ -55,6 +55,11 @@ public class HistoryFragment extends Fragment {
         this.loadTracks();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
     private void findViews(View view) {
         this.recyclerView = (RecyclerView) view.findViewById(R.id.trackRecyclerView);
         this.swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.trackSwipeRefreshLayout);

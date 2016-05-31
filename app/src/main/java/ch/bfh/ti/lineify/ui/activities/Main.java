@@ -105,7 +105,7 @@ public class Main extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                handleFloatingActionButtonVisibility(position);
+                Main.this.handleFloatingActionButtonVisibility(position);
             }
 
             @Override
