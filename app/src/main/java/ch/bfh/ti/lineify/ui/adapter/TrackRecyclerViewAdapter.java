@@ -1,6 +1,7 @@
 package ch.bfh.ti.lineify.ui.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,7 +24,7 @@ public class TrackRecyclerViewAdapter extends RecyclerView.Adapter<TrackRecycler
 
     @Override
     public TrackRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = parent.inflate(parent.getContext(), R.layout.recycleritem_track, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycleritem_track, parent, false);
 
         return new TrackRecyclerViewHolder(view);
     }
