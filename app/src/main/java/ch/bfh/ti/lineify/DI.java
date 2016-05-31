@@ -10,7 +10,7 @@ public class DI {
     private static IDependencyContainer dependencyContainer;
 
     public static IDependencyContainer container() {
-        if (!isAlreadySetUp()) {
+        if (!isContainerAlreadySetUp()) {
             throw new Error("Dependency container not set up.");
         }
 
@@ -19,27 +19,36 @@ public class DI {
 
     public static void setup(Context applicationContext) {
         synchronized (setupLockPad) {
-            if (!isAlreadySetUp()) {
-                setupDependencyContainer();
-                setupApplicationContextInContainer(applicationContext);
+            if (!isContainerAlreadySetUp()) {
+                setupContainer(applicationContext);
             }
         }
     }
 
-    public static boolean isAlreadySetUp() {
-        return dependencyContainer != null;
-    }
-
-    private static void setupDependencyContainer() {
+    public static IDependencyContainer createDependencyContainer() {
         IDependencyContainer container = new DependencyContainer();
         ch.bfh.ti.lineify.core.Registry.initializeDependencies(container);
         ch.bfh.ti.lineify.infrastructure.Registry.initializeDependencies(container);
         ch.bfh.ti.lineify.ui.Registry.initializeDependencies(container);
 
-        dependencyContainer = container;
+        return container;
     }
 
-    private static void setupApplicationContextInContainer(Context applicationContext) {
-        dependencyContainer.registerContainerControlled(Context.class, () -> applicationContext);
+    public static IDependencyContainer registerApplicationContext(IDependencyContainer container, Context applicationContext) {
+        container.registerContainerControlled(Context.class, () -> applicationContext);
+
+        return container;
+    }
+
+    private static boolean isContainerAlreadySetUp() {
+        return dependencyContainer != null;
+    }
+
+    private static void setupContainer(Context applicationContext) {
+        IDependencyContainer container;
+        container = createDependencyContainer();
+        container = registerApplicationContext(container, applicationContext);
+
+        dependencyContainer = container;
     }
 }

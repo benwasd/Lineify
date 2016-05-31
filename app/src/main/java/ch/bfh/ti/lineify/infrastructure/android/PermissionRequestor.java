@@ -1,4 +1,4 @@
-package ch.bfh.ti.lineify.infrastructure;
+package ch.bfh.ti.lineify.infrastructure.android;
 
 import android.Manifest;
 import android.app.Activity;

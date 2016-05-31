@@ -18,7 +18,7 @@ public class TrackingFragment extends Fragment {
     private TextView trackIdentifierTextView;
     private TextView wayPointsTextView;
     private TextView accuracyTextView;
-    private LinearLayout trackingInfoGroup;
+    private LinearLayout trackingInfoLinearLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,30 +44,49 @@ public class TrackingFragment extends Fragment {
         this.trackIdentifierTextView = (TextView) fragmentView.findViewById(R.id.trackIdentifierTextView);
         this.wayPointsTextView = (TextView) fragmentView.findViewById(R.id.wayPointsTextView);
         this.accuracyTextView = (TextView) fragmentView.findViewById(R.id.accuracyTextView);
-        this.trackingInfoGroup = (LinearLayout) fragmentView.findViewById(R.id.trackingInfoGroup);
+        this.trackingInfoLinearLayout = (LinearLayout) fragmentView.findViewById(R.id.trackingInfoLinearLayout);
     }
 
     private void initializeViews() {
+        this.bindTrack(null);
+        this.bindWayPoint(null);
+    }
+
+    public void onServiceStart(Track track) {
+        this.bindTrack(track);
+        this.bindWayPoint(null);
     }
 
     public void onReceiveWayPoint(Track track, WayPoint wayPoint) {
-        this.altitudeTextView.setText(String.format("%.0f", wayPoint.altitude()));
-        this.trackIdentifierTextView.setText(track.identifier());
-        this.wayPointsTextView.setText(String.format("%d", track.wayPointCount()));
-        this.accuracyTextView.setText(String.format("%.0f", wayPoint.accuracy()));
+        this.bindTrack(track);
+        this.bindWayPoint(wayPoint);
     }
 
-    public void handleServiceState(Track track) {
-        this.trackingInfoGroup.setVisibility(View.VISIBLE);
-
-        this.trackIdentifierTextView.setText(track.identifier());
-        this.wayPointsTextView.setText(String.format("%d", track.wayPointCount()));
-        this.accuracyTextView.setText(" ");
+    public void onServiceStop() {
+        this.bindTrack(null);
+        this.bindWayPoint(null);
     }
 
-    public void handleServiceState() {
-        this.trackingInfoGroup.setVisibility(View.INVISIBLE);
+    private void bindTrack(Track track) {
+        if (track != null) {
+            this.trackIdentifierTextView.setText(track.identifier());
+            this.wayPointsTextView.setText(String.format("%d", track.wayPointCount()));
 
-        this.altitudeTextView.setText("- - -");
+            this.trackingInfoLinearLayout.setVisibility(View.VISIBLE);
+        }
+        else {
+            this.trackingInfoLinearLayout.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void bindWayPoint(WayPoint wayPoint) {
+        if (wayPoint != null) {
+            this.altitudeTextView.setText(String.format("%.0f", wayPoint.altitude()));
+            this.accuracyTextView.setText(String.format("%.0f", wayPoint.accuracy()));
+        }
+        else {
+            this.altitudeTextView.setText("- - -");
+            this.accuracyTextView.setText("0");
+        }
     }
 }

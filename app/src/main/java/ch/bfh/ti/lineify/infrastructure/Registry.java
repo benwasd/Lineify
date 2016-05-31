@@ -7,6 +7,7 @@ import ch.bfh.ti.lineify.core.IWayPointRepository;
 import ch.bfh.ti.lineify.core.IWayPointService;
 import ch.bfh.ti.lineify.core.IWayPointStore;
 import ch.bfh.ti.lineify.core.dependencyInjection.IDependencyContainer;
+import ch.bfh.ti.lineify.infrastructure.android.PermissionRequestor;
 import ch.bfh.ti.lineify.infrastructure.azure.WayPointStore;
 import ch.bfh.ti.lineify.infrastructure.location.WayPointService;
 

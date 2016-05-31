@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -20,15 +19,15 @@ public class StartTrackingDialog extends DialogFragment {
         LayoutInflater inflater = mainActivity.getLayoutInflater();
 
         View view = inflater.inflate(R.layout.dialog_track_identifier, null);
-        EditText trackIdentifier = (EditText) view.findViewById(R.id.trackIdentifierEditText);
-        trackIdentifier.setText(Track.defaultIdentifier());
-        trackIdentifier.setSelection(trackIdentifier.getText().length());
+        EditText trackIdentifierEditText = (EditText) view.findViewById(R.id.trackIdentifierEditText);
+        trackIdentifierEditText.setText(Track.defaultIdentifier());
+        trackIdentifierEditText.setSelection(trackIdentifierEditText.getText().length());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
         builder.setView(view)
-            .setPositiveButton("Starten", (dialog, id) -> {
-                String userEmail = Settings.Secure.getString(mainActivity.getContentResolver(), Settings.Secure.ANDROID_ID); // TODO: Replace if we have user managment
-                String text = trackIdentifier.getText().toString();
+            .setPositiveButton(R.string.start, (dialog, id) -> {
+                String userEmail = UserManagement.getCurrentUsersEmail(this.getActivity());
+                String text = trackIdentifierEditText.getText().toString();
 
                 if (text.equals(null) || text.equals("")) {
                     text = Track.defaultIdentifier();
@@ -36,7 +35,7 @@ public class StartTrackingDialog extends DialogFragment {
 
                 mainActivity.startTracker(new Track(userEmail, text));
             })
-            .setNegativeButton("Abbrechen", (dialog, id) -> this.getDialog().cancel());
+            .setNegativeButton(R.string.abort, (dialog, id) -> this.getDialog().cancel());
 
         return builder.create();
     }

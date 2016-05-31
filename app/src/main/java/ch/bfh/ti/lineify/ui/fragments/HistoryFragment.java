@@ -2,7 +2,6 @@ package ch.bfh.ti.lineify.ui.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -19,16 +18,16 @@ import ch.bfh.ti.lineify.DI;
 import ch.bfh.ti.lineify.R;
 import ch.bfh.ti.lineify.core.Constants;
 import ch.bfh.ti.lineify.core.IWayPointRepository;
+import ch.bfh.ti.lineify.core.model.Track;
 import ch.bfh.ti.lineify.ui.activities.TrackDetail;
-import ch.bfh.ti.lineify.ui.adapter.IItemTouchListener;
 import ch.bfh.ti.lineify.ui.adapter.TouchListener;
 import ch.bfh.ti.lineify.ui.adapter.TrackRecyclerViewAdapter;
 
 public class HistoryFragment extends Fragment {
     private final IWayPointRepository wayPointRepository;
     private final TrackRecyclerViewAdapter recyclerAdapter;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public HistoryFragment() {
         this.wayPointRepository = DI.container().resolve(IWayPointRepository.class);
@@ -57,28 +56,18 @@ public class HistoryFragment extends Fragment {
     }
 
     private void findViews(View view) {
-        this.swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.trackSwipeRefreshLayout);
         this.recyclerView = (RecyclerView) view.findViewById(R.id.trackRecyclerView);
+        this.swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.trackSwipeRefreshLayout);
     }
 
     private void initializeViews() {
         this.recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         this.recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), LinearLayoutManager.VERTICAL));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        this.recyclerView.setItemAnimator(new DefaultItemAnimator());
         this.recyclerView.setAdapter(this.recyclerAdapter);
-
-        this.recyclerView.addOnItemTouchListener(new TouchListener(this.getContext(), this.recyclerView, new IItemTouchListener() {
-            @Override
-            public void onClick(View view, int position) {
-                Intent intent = new Intent(HistoryFragment.this.getContext(), TrackDetail.class);
-                intent.putExtra(Constants.TRACK_DETAIL_ACTIVITY_TRACK_EXTRA_NAME, recyclerAdapter.getTrack(position));
-                HistoryFragment.this.startActivity(intent);
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-            }
-        }));
+        this.recyclerView.addOnItemTouchListener(new TouchListener(this.getContext(), this.recyclerView, (view, position, isLongClick) ->
+            this.navigateToTrackDetail(this.recyclerAdapter.getTrack(position))
+        ));
 
         this.swipeRefreshLayout.setOnRefreshListener(() -> {
             this.loadTracks();
@@ -86,17 +75,30 @@ public class HistoryFragment extends Fragment {
     }
 
     private void loadTracks() {
-        String userEmail = Settings.Secure.getString(this.getActivity().getContentResolver(), Settings.Secure.ANDROID_ID); // TODO: Replace if we have user managment
+        String userEmail = UserManagement.getCurrentUsersEmail(this.getActivity());
 
         this.swipeRefreshLayout.setRefreshing(true);
         this.wayPointRepository.getTracks(userEmail).subscribe(
-            t -> this.recyclerAdapter.setTracks(t),
-            e -> {
-                Log.e("HistoryFragment", "Error while loading tracks.", e);
-                Snackbar.make(this.getView(), R.string.load_lines_network_error, Snackbar.LENGTH_LONG).show();
+            result -> {
+                this.recyclerAdapter.setTracks(result);
                 this.swipeRefreshLayout.setRefreshing(false);
             },
-            () -> this.swipeRefreshLayout.setRefreshing(false)
+            exception -> {
+                this.handleNetworkError(exception);
+                this.swipeRefreshLayout.setRefreshing(false);
+            }
         );
+    }
+
+    private void navigateToTrackDetail(Track track) {
+        Intent intent = new Intent(this.getContext(), TrackDetail.class);
+        intent.putExtra(Constants.TRACK_DETAIL_ACTIVITY_TRACK_EXTRA_NAME, track);
+
+        this.startActivity(intent);
+    }
+
+    private void handleNetworkError(Throwable e) {
+        Log.e("HistoryFragment", "Error while loading tracks.", e);
+        Snackbar.make(this.getView(), R.string.load_lines_network_error, Snackbar.LENGTH_LONG).show();
     }
 }
