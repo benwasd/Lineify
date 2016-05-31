@@ -45,4 +45,8 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
     compile 'com.microsoft.azure:azure-mobile-android:3.1.0'
+    compile 'com.github.PhilJay:MPAndroidChart:v2.2.5'
+}
+repositories {
+    maven { url "https://jitpack.io" }
 }
