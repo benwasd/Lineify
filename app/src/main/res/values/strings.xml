@@ -3,4 +3,5 @@
     <string name="load_lines_network_error">Fehler beim Laden der Lines. Prüfe deine Netzwerkeinstellungen.</string>
     <string name="abort">Abbrechen</string>
     <string name="start">Starten</string>
+    <string name="title_activity_track_detail_list">TrackDetailList</string>
 </resources>
