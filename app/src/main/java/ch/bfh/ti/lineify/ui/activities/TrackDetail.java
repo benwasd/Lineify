@@ -21,6 +21,7 @@ import java.util.TreeMap;
 import ch.bfh.ti.lineify.DI;
 import ch.bfh.ti.lineify.R;
 import ch.bfh.ti.lineify.core.Constants;
+import ch.bfh.ti.lineify.core.DateUtil;
 import ch.bfh.ti.lineify.core.IWayPointRepository;
 import ch.bfh.ti.lineify.core.dependencyInjection.IDependencyContainer;
 import ch.bfh.ti.lineify.core.model.Track;
@@ -79,7 +80,7 @@ public class TrackDetail extends AppCompatActivity {
 
     private void initializeViews() {
         this.toolbar.setTitle(this.track.identifier());
-        this.toolbar.setSubtitle(this.track.created().toString());
+        this.toolbar.setSubtitle(DateUtil.format(this.track.created()));
 
         this.setSupportActionBar(this.toolbar);
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
