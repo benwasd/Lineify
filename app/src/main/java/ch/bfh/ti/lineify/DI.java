@@ -6,11 +6,11 @@ import ch.bfh.ti.lineify.core.dependencyInjection.DependencyContainer;
 import ch.bfh.ti.lineify.core.dependencyInjection.IDependencyContainer;
 
 public class DI {
-    private static Object setupLockPad = new Object();
+    private final static Object setupLockPad = new Object();
     private static IDependencyContainer dependencyContainer;
 
     public static IDependencyContainer container() {
-        if (!isContainerAlreadySetUp()) {
+        if (!isAlreadySetup()) {
             throw new Error("Dependency container not set up.");
         }
 
@@ -19,36 +19,24 @@ public class DI {
 
     public static void setup(Context applicationContext) {
         synchronized (setupLockPad) {
-            if (!isContainerAlreadySetUp()) {
-                setupContainer(applicationContext);
+            if (!isAlreadySetup()) {
+                dependencyContainer = createDependencyContainer(applicationContext);
             }
         }
     }
 
-    public static IDependencyContainer createDependencyContainer() {
+    private static boolean isAlreadySetup() {
+        return dependencyContainer != null;
+    }
+
+    private static IDependencyContainer createDependencyContainer(Context applicationContext) {
         IDependencyContainer container = new DependencyContainer();
         ch.bfh.ti.lineify.core.Registry.initializeDependencies(container);
         ch.bfh.ti.lineify.infrastructure.Registry.initializeDependencies(container);
         ch.bfh.ti.lineify.ui.Registry.initializeDependencies(container);
 
-        return container;
-    }
-
-    public static IDependencyContainer registerApplicationContext(IDependencyContainer container, Context applicationContext) {
         container.registerContainerControlled(Context.class, () -> applicationContext);
 
         return container;
-    }
-
-    private static boolean isContainerAlreadySetUp() {
-        return dependencyContainer != null;
-    }
-
-    private static void setupContainer(Context applicationContext) {
-        IDependencyContainer container;
-        container = createDependencyContainer();
-        container = registerApplicationContext(container, applicationContext);
-
-        dependencyContainer = container;
     }
 }

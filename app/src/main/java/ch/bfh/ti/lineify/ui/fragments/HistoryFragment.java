@@ -20,6 +20,7 @@ import ch.bfh.ti.lineify.core.Constants;
 import ch.bfh.ti.lineify.core.IWayPointRepository;
 import ch.bfh.ti.lineify.core.model.Track;
 import ch.bfh.ti.lineify.ui.activities.TrackDetail;
+import ch.bfh.ti.lineify.ui.adapter.DividerItemDecoration;
 import ch.bfh.ti.lineify.ui.adapter.TouchListener;
 import ch.bfh.ti.lineify.ui.adapter.TrackRecyclerViewAdapter;
 
