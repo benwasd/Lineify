@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import ch.bfh.ti.lineify.DI;
 import ch.bfh.ti.lineify.R;
 import ch.bfh.ti.lineify.core.Constants;
 import ch.bfh.ti.lineify.core.IWayPointRepository;
@@ -30,9 +29,9 @@ public class HistoryFragment extends Fragment {
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    public HistoryFragment() {
-        this.wayPointRepository = DI.container().resolve(IWayPointRepository.class);
-        this.recyclerAdapter = new TrackRecyclerViewAdapter();
+    public HistoryFragment(IWayPointRepository wayPointRepository, TrackRecyclerViewAdapter trackRecyclerViewAdapter) {
+        this.wayPointRepository = wayPointRepository;
+        this.recyclerAdapter = trackRecyclerViewAdapter;
     }
 
     @Override

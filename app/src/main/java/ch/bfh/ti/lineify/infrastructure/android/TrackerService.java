@@ -12,20 +12,24 @@ import ch.bfh.ti.lineify.core.Constants;
 import ch.bfh.ti.lineify.core.IWayPointService;
 import ch.bfh.ti.lineify.core.IWayPointStore;
 import ch.bfh.ti.lineify.core.ListUtils;
+import ch.bfh.ti.lineify.core.dependencyInjection.IDependencyContainer;
 import ch.bfh.ti.lineify.core.model.Track;
 import ch.bfh.ti.lineify.core.model.WayPoint;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
 public class TrackerService extends Service {
-    private final IWayPointService wayPointService;
-    private final IWayPointStore wayPointStore;
-    private final CompositeSubscription subscriptions;
+    private IWayPointService wayPointService;
+    private IWayPointStore wayPointStore;
+    private CompositeSubscription subscriptions;
 
-    public TrackerService() {
-        this.wayPointService = DI.container().resolve(IWayPointService.class);
-        this.wayPointStore = DI.container().resolve(IWayPointStore.class);
+    @Override
+    public void onCreate() {
+        this.wayPointService = this.container().resolve(IWayPointService.class);
+        this.wayPointStore = this.container().resolve(IWayPointStore.class);
         this.subscriptions = new CompositeSubscription();
+
+        super.onCreate();
     }
 
     @Nullable
@@ -58,6 +62,10 @@ public class TrackerService extends Service {
     @Override
     public void onDestroy() {
         this.subscriptions.unsubscribe();
+    }
+
+    private IDependencyContainer container() {
+        return DI.container(this.getApplicationContext());
     }
 
     private void broadcastWayPoint(Track track, WayPoint wayPoint, Intent startStopIntent) {

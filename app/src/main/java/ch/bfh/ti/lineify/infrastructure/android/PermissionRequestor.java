@@ -1,6 +1,5 @@
 package ch.bfh.ti.lineify.infrastructure.android;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -13,16 +12,10 @@ import java.util.List;
 import ch.bfh.ti.lineify.core.IPermissionRequestor;
 import rx.functions.Action1;
 
-public class PermissionRequestor implements IPermissionRequestor {
-    private static final int PERMISSION_REQUEST_ID = 1337;
-    private static final String[] PERMISSIONS = new String[]
-    {
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.INTERNET,
-        Manifest.permission.ACCESS_NETWORK_STATE,
-    };
+import static ch.bfh.ti.lineify.core.Constants.PERMISSIONS;
+import static ch.bfh.ti.lineify.core.Constants.PERMISSION_REQUEST_ID;
 
+public class PermissionRequestor implements IPermissionRequestor {
     private final Context context;
     private Action1<RequestPermissionsResultHandler> handler;
 

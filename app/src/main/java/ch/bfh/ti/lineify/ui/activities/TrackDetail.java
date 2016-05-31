@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -14,7 +13,6 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.TimeZone;
 
 import ch.bfh.ti.lineify.DI;
@@ -23,7 +21,6 @@ import ch.bfh.ti.lineify.core.Constants;
 import ch.bfh.ti.lineify.core.IWayPointRepository;
 import ch.bfh.ti.lineify.core.model.Track;
 import ch.bfh.ti.lineify.core.model.WayPoint;
-import rx.functions.Action1;
 
 public class TrackDetail extends AppCompatActivity {
     private ListView listView;
@@ -39,7 +36,7 @@ public class TrackDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_detail);
 
-        this.wayPointRepository = DI.container().resolve(IWayPointRepository.class);
+        this.wayPointRepository = DI.container(this.getApplicationContext()).resolve(IWayPointRepository.class);
         this.track = (Track) this.getIntent().getSerializableExtra(Constants.TRACK_DETAIL_ACTIVITY_TRACK_EXTRA_NAME);
 
         this.findViews();
