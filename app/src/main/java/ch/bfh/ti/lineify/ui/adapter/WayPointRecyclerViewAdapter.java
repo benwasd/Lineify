@@ -32,7 +32,7 @@ public class WayPointRecyclerViewAdapter extends RecyclerView.Adapter<WayPointRe
     @Override
     public void onBindViewHolder(WayPointRecyclerViewHolder viewHolder, int position) {
         if (this.wayPoints != null) {
-            WayPoint wayPoint = this.wayPoints.get(position);
+            WayPoint wayPoint = this.getWayPoint(position);
             viewHolder.bindWayPoint(wayPoint);
         }
     }

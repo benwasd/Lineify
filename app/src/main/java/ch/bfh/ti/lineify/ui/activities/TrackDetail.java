@@ -1,6 +1,5 @@
 package ch.bfh.ti.lineify.ui.activities;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -93,9 +92,7 @@ public class TrackDetail extends AppCompatActivity {
         this.lineChart.setTouchEnabled(true);
         this.lineChart.setAutoScaleMinMaxEnabled(false);
         this.lineChart.setHardwareAccelerationEnabled(true);
-        this.lineChart.setNoDataText("Keine Daten vorhanden oder Netzwerkverbindung unmöglich");
-
-        this.loadWayPoints();
+        this.lineChart.setNoDataText(this.getString(R.string.load_line_network_error));
     }
 
     private void loadWayPoints() {
@@ -106,7 +103,7 @@ public class TrackDetail extends AppCompatActivity {
     }
 
     private void buildAndSetChartData(List<WayPoint> wayPoints) {
-        if (wayPoints.size() < 3) {
+        if (wayPoints.size() < 5) {
             return;
         }
 
@@ -138,7 +135,7 @@ public class TrackDetail extends AppCompatActivity {
         final long minMs = map.firstKey();
         final long maxMs = map.lastKey();
         final long fullRangeMs = maxMs - minMs;
-        final long rangeMs = fullRangeMs / map.size() / 2;
+        final long rangeMs = fullRangeMs / map.size() / 5;
         final long semiRangeMs = rangeMs / 2;
 
         final long graphStart = minMs - semiRangeMs;
@@ -170,7 +167,6 @@ public class TrackDetail extends AppCompatActivity {
         {{
             setXVals(labels);
             addDataSet(lineDataSet);
-
         }};
 
         lineChart.setData(line);

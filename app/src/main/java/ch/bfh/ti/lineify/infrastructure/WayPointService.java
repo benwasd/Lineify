@@ -1,4 +1,4 @@
-package ch.bfh.ti.lineify.infrastructure.location;
+package ch.bfh.ti.lineify.infrastructure;
 
 import android.content.Context;
 import android.location.Location;

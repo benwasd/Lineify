@@ -17,8 +17,8 @@ import android.view.ViewGroup;
 import ch.bfh.ti.lineify.R;
 import ch.bfh.ti.lineify.core.Constants;
 import ch.bfh.ti.lineify.core.IWayPointRepository;
+import ch.bfh.ti.lineify.core.IWayPointStore;
 import ch.bfh.ti.lineify.core.model.Track;
-import ch.bfh.ti.lineify.ui.activities.TrackDetail;
 import ch.bfh.ti.lineify.ui.activities.TrackDetailList;
 import ch.bfh.ti.lineify.ui.adapter.DividerItemDecoration;
 import ch.bfh.ti.lineify.ui.adapter.TouchListener;
@@ -26,12 +26,14 @@ import ch.bfh.ti.lineify.ui.adapter.TrackRecyclerViewAdapter;
 
 public class HistoryFragment extends Fragment {
     private final IWayPointRepository wayPointRepository;
+    private final IWayPointStore wayPointStore;
     private final TrackRecyclerViewAdapter recyclerAdapter;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    public HistoryFragment(IWayPointRepository wayPointRepository, TrackRecyclerViewAdapter trackRecyclerViewAdapter) {
+    public HistoryFragment(IWayPointRepository wayPointRepository, IWayPointStore wayPointStore, TrackRecyclerViewAdapter trackRecyclerViewAdapter) {
         this.wayPointRepository = wayPointRepository;
+        this.wayPointStore = wayPointStore;
         this.recyclerAdapter = trackRecyclerViewAdapter;
     }
 
@@ -53,6 +55,7 @@ public class HistoryFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        this.wayPointStore.syncWithBackend(); // TODO: Use promise and load tracks after sync, not parallel
         this.loadTracks();
     }
 
@@ -76,8 +79,16 @@ public class HistoryFragment extends Fragment {
         ));
 
         this.swipeRefreshLayout.setOnRefreshListener(() -> {
+            this.wayPointStore.syncWithBackend(); // TODO: Use promise and load tracks after sync, not parallel
             this.loadTracks();
         });
+    }
+
+    private void navigateToTrackDetailList(Track track) {
+        Intent intent = new Intent(this.getContext(), TrackDetailList.class);
+        intent.putExtra(Constants.TRACK_DETAIL_ACTIVITY_TRACK_EXTRA_NAME, track);
+
+        this.startActivity(intent);
     }
 
     private void loadTracks() {
@@ -94,13 +105,6 @@ public class HistoryFragment extends Fragment {
                 this.swipeRefreshLayout.setRefreshing(false);
             }
         );
-    }
-
-    private void navigateToTrackDetailList(Track track) {
-        Intent intent = new Intent(this.getContext(), TrackDetailList.class);
-        intent.putExtra(Constants.TRACK_DETAIL_ACTIVITY_TRACK_EXTRA_NAME, track);
-
-        this.startActivity(intent);
     }
 
     private void handleNetworkError(Throwable e) {
