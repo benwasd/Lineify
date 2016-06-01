@@ -26,14 +26,12 @@ import ch.bfh.ti.lineify.ui.adapter.TrackRecyclerViewAdapter;
 
 public class HistoryFragment extends Fragment {
     private final IWayPointRepository wayPointRepository;
-    private final IWayPointStore wayPointStore;
     private final TrackRecyclerViewAdapter recyclerAdapter;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    public HistoryFragment(IWayPointRepository wayPointRepository, IWayPointStore wayPointStore, TrackRecyclerViewAdapter trackRecyclerViewAdapter) {
+    public HistoryFragment(IWayPointRepository wayPointRepository, TrackRecyclerViewAdapter trackRecyclerViewAdapter) {
         this.wayPointRepository = wayPointRepository;
-        this.wayPointStore = wayPointStore;
         this.recyclerAdapter = trackRecyclerViewAdapter;
     }
 
@@ -55,7 +53,6 @@ public class HistoryFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        this.wayPointStore.syncWithBackend(); // TODO: Use promise and load tracks after sync, not parallel
         this.loadTracks();
     }
 
@@ -79,7 +76,6 @@ public class HistoryFragment extends Fragment {
         ));
 
         this.swipeRefreshLayout.setOnRefreshListener(() -> {
-            this.wayPointStore.syncWithBackend(); // TODO: Use promise and load tracks after sync, not parallel
             this.loadTracks();
         });
     }

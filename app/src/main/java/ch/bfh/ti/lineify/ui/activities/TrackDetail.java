@@ -93,6 +93,8 @@ public class TrackDetail extends AppCompatActivity {
         this.lineChart.setAutoScaleMinMaxEnabled(false);
         this.lineChart.setHardwareAccelerationEnabled(true);
         this.lineChart.setNoDataText(this.getString(R.string.load_line_network_error));
+
+        this.loadWayPoints();
     }
 
     private void loadWayPoints() {

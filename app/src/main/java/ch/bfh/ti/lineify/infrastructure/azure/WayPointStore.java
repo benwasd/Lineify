@@ -143,10 +143,10 @@ public class WayPointStore implements IWayPointStore {
 
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
             else {
-                task.execute().get();
+                task.execute();
             }
         }
         catch (Exception ex) {
