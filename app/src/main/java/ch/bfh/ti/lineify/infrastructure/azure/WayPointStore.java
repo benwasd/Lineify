@@ -89,7 +89,7 @@ public class WayPointStore implements IWayPointStore {
     }
 
     private void initLocalStore() {
-        runAsync(() -> {
+        await(runAsync(() -> {
             MobileServiceSyncContext syncContext = this.serviceClient.getSyncContext();
 
             if (syncContext.isInitialized()) {
@@ -122,7 +122,7 @@ public class WayPointStore implements IWayPointStore {
             catch (Exception ex) {
                 ex.printStackTrace();
             }
-        });
+        }));
     }
 
     private boolean isConnected() {
@@ -132,7 +132,7 @@ public class WayPointStore implements IWayPointStore {
         return ni != null && ni.isConnected();
     }
 
-    private static void runAsync(Runnable runnable) {
+    private static AsyncTask<Void, Void, Void> runAsync(Runnable runnable) {
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -141,16 +141,21 @@ public class WayPointStore implements IWayPointStore {
             }
         };
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            return task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+        else {
+            return task.execute();
+        }
+    }
+
+    private static <T> T await(AsyncTask<?, ?, T> task) {
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            }
-            else {
-                task.execute();
-            }
+            return task.get();
         }
         catch (Exception ex) {
             ex.printStackTrace();
+            throw new Error(ex.getMessage());
         }
     }
 }
