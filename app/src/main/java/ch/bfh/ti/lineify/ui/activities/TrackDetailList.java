@@ -98,6 +98,7 @@ public class TrackDetailList extends AppCompatActivity {
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         this.getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        this.recyclerView.addItemDecoration(new DividerItemDecoration(getWindow().getContext(), LinearLayoutManager.VERTICAL));
         this.recyclerView.setLayoutManager(this.recyclerViewLayoutManager);
         this.recyclerView.setAdapter(this.recyclerAdapter);
 

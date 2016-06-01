@@ -24,7 +24,7 @@ public class WayPointRecyclerViewHolder extends RecyclerView.ViewHolder {
 
     public void bindWayPoint(WayPoint wayPoint) {
         this.createdAtTextView.setText(DateUtil.format(wayPoint.created()));
-        this.altitudeTextView.setText(wayPoint.altitude()+"m");
+        this.altitudeTextView.setText(String.format("%.0f m", wayPoint.altitude()));
         this.latitudeTextView.setText(wayPoint.latitude()+" N");
         this.longitudeTextView.setText(wayPoint.longitude()+" E");
     }
