@@ -71,14 +71,8 @@ public class HistoryFragment extends Fragment {
         this.recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), LinearLayoutManager.VERTICAL));
         this.recyclerView.setItemAnimator(new DefaultItemAnimator());
         this.recyclerView.setAdapter(this.recyclerAdapter);
-        this.recyclerView.addOnItemTouchListener(new TouchListener(this.getContext(), this.recyclerView, (view, position, isLongClick) -> {
-                if(!isLongClick) {
-                    this.navigateToTrackDetail(this.recyclerAdapter.getTrack(position));
-                }
-                else {
-                    this.navigateToTrackDetailList(this.recyclerAdapter.getTrack(position));
-                }
-            }
+        this.recyclerView.addOnItemTouchListener(new TouchListener(this.getContext(), this.recyclerView, (view, position, isLongClick) ->
+            this.navigateToTrackDetailList(this.recyclerAdapter.getTrack(position))
         ));
 
         this.swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -100,13 +94,6 @@ public class HistoryFragment extends Fragment {
                 this.swipeRefreshLayout.setRefreshing(false);
             }
         );
-    }
-
-    private void navigateToTrackDetail(Track track) {
-        Intent intent = new Intent(this.getContext(), TrackDetail.class);
-        intent.putExtra(Constants.TRACK_DETAIL_ACTIVITY_TRACK_EXTRA_NAME, track);
-
-        this.startActivity(intent);
     }
 
     private void navigateToTrackDetailList(Track track) {

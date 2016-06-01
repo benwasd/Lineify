@@ -1,5 +1,6 @@
 package ch.bfh.ti.lineify.ui.activities;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -92,6 +93,7 @@ public class TrackDetail extends AppCompatActivity {
         this.lineChart.setTouchEnabled(true);
         this.lineChart.setAutoScaleMinMaxEnabled(false);
         this.lineChart.setHardwareAccelerationEnabled(true);
+        this.lineChart.setNoDataText("Keine Daten vorhanden oder Netzwerkverbindung unmöglich");
 
         this.loadWayPoints();
     }
